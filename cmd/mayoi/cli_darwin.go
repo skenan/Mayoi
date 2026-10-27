@@ -23,7 +23,7 @@ func startApp(paths []string) error {
 	if app == "" {
 		return startDetached(paths)
 	}
-	if out, err := exec.Command("open", append([]string{"-a", app}, paths...)...).CombinedOutput(); err != nil {
+	if out, err := exec.Command("/usr/bin/open", append([]string{"-a", app}, paths...)...).CombinedOutput(); err != nil {
 		return fmt.Errorf("open: %s", strings.TrimSpace(string(out)))
 	}
 	return nil

@@ -10,6 +10,7 @@ Every release needs a `## <version>` section here, or its build fails.
 - Signing in to a Mon account and settings sync are removed, along with the status bar's cloud.
 - **Git: Write Commit Message with AI** and the ✨ button in the commit box are removed.
 - Mayoi no longer offers to send crash reports; crash logs stay in the `crashes` folder.
+- The `mayoi` command starts Mayoi when it is run without a `PATH`, as from Raycast.
 - `⌘J` toggles the terminal panel, and `⌘E` opens Quick Open.
 - In the editor, `⌘K` opens replace and `⌘D` deletes the line; in a terminal, `⌘K` clears it.
 - `⌃H` searches the files, outside a terminal.
