@@ -165,6 +165,7 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"view.moveTabNext", t.CmdViewMoveTabNext(), "", func() { a.moveTabBy(1) }},
 		{"view.moveTabPrev", t.CmdViewMoveTabPrev(), "", func() { a.moveTabBy(-1) }},
 		{"view.wordWrap", t.CmdViewWordWrap(), "", a.toggleWordWrap},
+		{"view.stickyScroll", t.CmdViewStickyScroll(), "", a.toggleStickyScroll},
 		{"view.vim", t.CmdViewVim(), "", a.toggleVim},
 		{"view.projectTabs", t.CmdViewProjectTabs(), "", a.toggleProjectTabs},
 		{"view.wordWrapTab", t.CmdViewWordWrapTab(), "Alt+Z", a.toggleTabWrap},
@@ -480,7 +481,7 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 		}},
 		{Label: locales.MenuView(), Submenu: []*mygo.MenuItem{
 			item("view.sidebar"), checkbox("view.sidebarRight", a.settings.SidebarRight), item("view.explorer"), item("view.search"), item("view.scm"), mygo.Separator(),
-			checkbox("view.wordWrap", a.settings.WordWrap), item("view.wordWrapTab"), item("view.togglePreview"), item("view.previewToSide"),
+			checkbox("view.wordWrap", a.settings.WordWrap), item("view.wordWrapTab"), checkbox("view.stickyScroll", a.settings.StickyScroll), item("view.togglePreview"), item("view.previewToSide"),
 			checkbox("view.markdownPreview", a.settings.MarkdownPreview), mygo.Separator(),
 			checkbox("view.vim", a.settings.Vim), checkbox("view.projectTabs", a.settings.ProjectTabs), mygo.Separator(),
 			item("view.splitRight"), item("view.nextColumn"), item("view.prevColumn"),

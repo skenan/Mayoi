@@ -282,6 +282,7 @@ var vscodeCommands = map[string]string{
 	"workbench.action.moveEditorToNextGroup":     "view.moveTabNext",
 	"workbench.action.moveEditorToPreviousGroup": "view.moveTabPrev",
 	"editor.action.toggleWordWrap":               "view.wordWrapTab",
+	"editor.action.toggleStickyScroll":           "view.stickyScroll",
 	"workbench.action.zoomIn":                    "view.zoomIn",
 	"workbench.action.zoomOut":                   "view.zoomOut",
 	"workbench.action.zoomReset":                 "view.zoomReset",

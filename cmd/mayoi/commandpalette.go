@@ -83,6 +83,8 @@ func (a *app) commandOn(id string) bool {
 		return s.AutoSave
 	case "view.wordWrap":
 		return s.WordWrap
+	case "view.stickyScroll":
+		return s.StickyScroll
 	case "view.vim":
 		return s.Vim
 	case "view.sidebarRight":

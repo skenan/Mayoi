@@ -470,6 +470,7 @@
   "cmdViewTogglePreview": "Toggle Preview",
   "cmdViewVim": "Vim Mode",
   "cmdViewWordWrap": "Word Wrap",
+  "cmdViewStickyScroll": "Sticky Scroll",
   "cmdViewWordWrapTab": "Toggle Word Wrap in Tab",
   "cmdViewZoomIn": "Zoom In",
   "cmdViewZoomOut": "Zoom Out",

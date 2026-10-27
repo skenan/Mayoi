@@ -111,6 +111,9 @@ type Prefs struct {
 	// scrolling sideways to them. A tab may choose otherwise, until this
 	// changes: Settings.WrapGen counts its changes.
 	WordWrap bool `json:"wordWrap,omitempty"`
+	// StickyScroll pins the lines that open the blocks in view to the top
+	// of the editor.
+	StickyScroll bool `json:"stickyScroll"`
 	// PreviewMermaid draws the blocks of Mermaid of a Markdown preview as
 	// the diagrams they make, rather than their source.
 	PreviewMermaid bool `json:"previewMermaid"`
@@ -355,7 +358,7 @@ func Default() *Settings {
 	return &Settings{
 		Prefs: Prefs{
 			FontSize: 13, FontFamily: "monospace", FontWeight: 400, LineHeight: 1.55,
-			AutoSave: true, Blame: true, TerminalCopyOnSelect: true, PreviewMermaid: true, PreviewMath: true,
+			AutoSave: true, Blame: true, StickyScroll: true, TerminalCopyOnSelect: true, PreviewMermaid: true, PreviewMath: true,
 			DiffAlignedRows: true, DiffContext: 3, DiffSyncScroll: true, MergeAutoApply: true,
 		},
 	}

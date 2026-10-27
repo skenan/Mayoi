@@ -544,6 +544,30 @@ func TestCaretStaysBelowStickyLines(t *testing.T) {
 	}
 }
 
+// Sticky Scroll off, no lines stick at the top as the editor scrolls into
+// a function; on again, they do.
+func TestStickyScrollOff(t *testing.T) {
+	hs, d := editHarness(t, "long.go", longGo(40))
+	scrolled := func() {
+		d.vscroll.Y = editorPadY + float32(19*5+10)*hs.a.font.lineH
+		hs.settle()
+	}
+	scrolled()
+	if len(d.sticky) == 0 {
+		t.Fatal("no lines stick, with Sticky Scroll on")
+	}
+	hs.a.run("view.stickyScroll")
+	scrolled()
+	if hs.a.settings.StickyScroll || len(d.sticky) != 0 {
+		t.Fatalf("Sticky Scroll %v: %d lines stick", hs.a.settings.StickyScroll, len(d.sticky))
+	}
+	hs.a.run("view.stickyScroll")
+	scrolled()
+	if len(d.sticky) == 0 {
+		t.Fatal("no lines stick, with Sticky Scroll on again")
+	}
+}
+
 func lineOf(d *editor) int {
 	s := d.buf.Snapshot()
 	return s.LineAt(min(d.sel[1], s.Len()))

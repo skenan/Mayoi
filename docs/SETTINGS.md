@@ -57,6 +57,7 @@ takes its default.
 | `projectTabStyle`       | none          | A label, color and icon for each folder                     | A square's context menu on the rail            |
 | `autoSave`              | `true`        | `true`, `false`                                             | **File → Auto Save**                           |
 | `wordWrap`              | `false`       | `true`, `false`                                             | **View → Word Wrap**                           |
+| `stickyScroll`          | `true`        | `true`, `false`                                             | **View → Sticky Scroll**                       |
 | `previewMermaid`        | `true`        | `true`, `false`                                             | Only this file                                 |
 | `previewMath`           | `true`        | `true`, `false`                                             | Only this file                                 |
 | `markdownPreview`       | `false`       | `true`, `false`                                             | **View → Preview Markdown on Open**            |
@@ -125,6 +126,8 @@ differ in width lines them up only roughly.
 - **`terminalCopyOnSelect`** copies what you select in a terminal to the clipboard as you let go of the pointer,
   and what Select All selects. Changing it applies to the terminals already open.
 - **`autoSave`** saves a changed file a moment after you stop typing, and when you leave it.
+- **`stickyScroll`** pins the lines that open the blocks in view, as a function's first line, to the top of the editor
+  as it scrolls.
 - **`wordWrap`** wraps long lines at the edge of the editor. **⌥Z** wraps or unwraps one tab only, until this
   setting changes.
 - **`previewMermaid`** draws the `mermaid` code blocks of a Markdown preview as diagrams. Turn it off to show

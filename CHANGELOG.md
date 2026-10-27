@@ -20,6 +20,7 @@ needs a `## <version>` section here, or its build fails.
 - `F12` or ⌘-click on a name goes to its definition, in the file or the folder's files of its language.
 - When a name has several definitions, a box lists them to choose one.
 - `⌘[` goes back to where a jump left, and `⌘]` forward again; `Tab` and `⇧Tab` still indent.
+- **View → Sticky Scroll** turns off the lines pinned to the top of the editor; `stickyScroll` in settings.
 
 ## 0.13.0
 

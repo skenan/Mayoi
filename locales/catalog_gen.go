@@ -2456,6 +2456,16 @@ func (msgs Messages) CmdViewWordWrap() string {
 	return Catalog.Format(msgs.locale, "cmdViewWordWrap", nil)
 }
 
+// CmdViewStickyScroll says "Sticky Scroll"
+// in the language the app shows.
+func CmdViewStickyScroll() string { return In(i18n.Locale()).CmdViewStickyScroll() }
+
+// CmdViewStickyScroll says "Sticky Scroll"
+// in the language of msgs.
+func (msgs Messages) CmdViewStickyScroll() string {
+	return Catalog.Format(msgs.locale, "cmdViewStickyScroll", nil)
+}
+
 // CmdViewWordWrapTab says "Toggle Word Wrap in Tab"
 // in the language the app shows.
 func CmdViewWordWrapTab() string { return In(i18n.Locale()).CmdViewWordWrapTab() }

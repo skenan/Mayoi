@@ -758,7 +758,7 @@ func (a *app) scrollToCaret(d *editor, g geometry, snap ui.TextSnapshot, caret i
 // is scrolled: above the first line wholly in view.
 func (a *app) stickyAt(d *editor, g geometry, snap ui.TextSnapshot, viewH float32) []int {
 	lineH := a.font.lineH
-	if d.vscroll.Y <= editorPadY || !isCode(d.document) {
+	if !a.settings.StickyScroll || d.vscroll.Y <= editorPadY || !isCode(d.document) {
 		return nil
 	}
 	y := d.vscroll.Y - editorPadY

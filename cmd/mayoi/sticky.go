@@ -187,6 +187,13 @@ type stickyRow struct {
 	spans  []ui.Span
 }
 
+// toggleStickyScroll pins the lines that open the blocks in view to the
+// top of the editors, or stops.
+func (a *app) toggleStickyScroll() {
+	a.settings.StickyScroll = !a.settings.StickyScroll
+	a.settings.Changed()
+}
+
 // stickyRows builds the rows of the lines that stick.
 func (a *app) stickyRows(d *editor, snap ui.TextSnapshot, lines []int) []stickyRow {
 	p, f := a.pal, a.font
