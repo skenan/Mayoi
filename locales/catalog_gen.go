@@ -6,17 +6,13 @@ import (
 	"embed"
 
 	"github.com/egoist/mygo/i18n"
-
-	// MyGo's own strings in the app's languages.
-	_ "github.com/egoist/mygo/locales/ja"
-	_ "github.com/egoist/mygo/locales/zh-Hans"
 )
 
 //go:embed *.json
 var files embed.FS
 
-// Catalog holds the messages in en, the source language, and ja and
-// zh-Hans. It is registered with package i18n, which makes its languages
+// Catalog holds the messages in en, the source language, and no other
+// language. It is registered with package i18n, which makes its languages
 // the app's.
 var Catalog *i18n.Catalog
 
@@ -294,56 +290,6 @@ func AgoYears(count int) string { return In(i18n.Locale()).AgoYears(count) }
 // in the language of msgs.
 func (msgs Messages) AgoYears(count int) string {
 	return Catalog.Format(msgs.locale, "agoYears", map[string]any{"count": count})
-}
-
-// AiFailed says "Couldn't write the message: {error}"
-// in the language the app shows.
-func AiFailed(error string) string { return In(i18n.Locale()).AiFailed(error) }
-
-// AiFailed says "Couldn't write the message: {error}"
-// in the language of msgs.
-func (msgs Messages) AiFailed(error string) string {
-	return Catalog.Format(msgs.locale, "aiFailed", map[string]any{"error": error})
-}
-
-// AiLimitLater says "You've used today's AI tokens. Try again after {time}."
-// in the language the app shows.
-func AiLimitLater(time_ string) string { return In(i18n.Locale()).AiLimitLater(time_) }
-
-// AiLimitLater says "You've used today's AI tokens. Try again after {time}."
-// in the language of msgs.
-func (msgs Messages) AiLimitLater(time_ string) string {
-	return Catalog.Format(msgs.locale, "aiLimitLater", map[string]any{"time": time_})
-}
-
-// AiLimitReached says "The AI limit is reached: {reason}"
-// in the language the app shows.
-func AiLimitReached(reason string) string { return In(i18n.Locale()).AiLimitReached(reason) }
-
-// AiLimitReached says "The AI limit is reached: {reason}"
-// in the language of msgs.
-func (msgs Messages) AiLimitReached(reason string) string {
-	return Catalog.Format(msgs.locale, "aiLimitReached", map[string]any{"reason": reason})
-}
-
-// AiLimitSoon says "{count, plural, one {Too many AI requests: try again in # second.} other {Too many AI requests: try again in # second…"
-// in the language the app shows.
-func AiLimitSoon(count int) string { return In(i18n.Locale()).AiLimitSoon(count) }
-
-// AiLimitSoon says "{count, plural, one {Too many AI requests: try again in # second.} other {Too many AI requests: try again in # second…"
-// in the language of msgs.
-func (msgs Messages) AiLimitSoon(count int) string {
-	return Catalog.Format(msgs.locale, "aiLimitSoon", map[string]any{"count": count})
-}
-
-// AiTimedOut says "The AI took too long to answer. Try again."
-// in the language the app shows.
-func AiTimedOut() string { return In(i18n.Locale()).AiTimedOut() }
-
-// AiTimedOut says "The AI took too long to answer. Try again."
-// in the language of msgs.
-func (msgs Messages) AiTimedOut() string {
-	return Catalog.Format(msgs.locale, "aiTimedOut", nil)
 }
 
 // AlertCaution says "Caution"
@@ -948,16 +894,6 @@ func (msgs Messages) ButtonDontSave() string {
 	return Catalog.Format(msgs.locale, "buttonDontSave", nil)
 }
 
-// ButtonDontSend says "Don't Send"
-// in the language the app shows.
-func ButtonDontSend() string { return In(i18n.Locale()).ButtonDontSend() }
-
-// ButtonDontSend says "Don't Send"
-// in the language of msgs.
-func (msgs Messages) ButtonDontSend() string {
-	return Catalog.Format(msgs.locale, "buttonDontSend", nil)
-}
-
 // ButtonSave says "Save"
 // in the language the app shows.
 func ButtonSave() string { return In(i18n.Locale()).ButtonSave() }
@@ -966,26 +902,6 @@ func ButtonSave() string { return In(i18n.Locale()).ButtonSave() }
 // in the language of msgs.
 func (msgs Messages) ButtonSave() string {
 	return Catalog.Format(msgs.locale, "buttonSave", nil)
-}
-
-// ButtonSendReport says "Send"
-// in the language the app shows.
-func ButtonSendReport() string { return In(i18n.Locale()).ButtonSendReport() }
-
-// ButtonSendReport says "Send"
-// in the language of msgs.
-func (msgs Messages) ButtonSendReport() string {
-	return Catalog.Format(msgs.locale, "buttonSendReport", nil)
-}
-
-// ButtonShowReport says "Show Report"
-// in the language the app shows.
-func ButtonShowReport() string { return In(i18n.Locale()).ButtonShowReport() }
-
-// ButtonShowReport says "Show Report"
-// in the language of msgs.
-func (msgs Messages) ButtonShowReport() string {
-	return Catalog.Format(msgs.locale, "buttonShowReport", nil)
 }
 
 // ButtonUndo says "Undo"
@@ -1248,66 +1164,6 @@ func CloseOtherProjectsQuestion(count int) string {
 // in the language of msgs.
 func (msgs Messages) CloseOtherProjectsQuestion(count int) string {
 	return Catalog.Format(msgs.locale, "closeOtherProjectsQuestion", map[string]any{"count": count})
-}
-
-// CmdAccountCompareKeybindings says "Compare Keyboard Shortcuts from Sync"
-// in the language the app shows.
-func CmdAccountCompareKeybindings() string { return In(i18n.Locale()).CmdAccountCompareKeybindings() }
-
-// CmdAccountCompareKeybindings says "Compare Keyboard Shortcuts from Sync"
-// in the language of msgs.
-func (msgs Messages) CmdAccountCompareKeybindings() string {
-	return Catalog.Format(msgs.locale, "cmdAccountCompareKeybindings", nil)
-}
-
-// CmdAccountManage says "Manage Account…"
-// in the language the app shows.
-func CmdAccountManage() string { return In(i18n.Locale()).CmdAccountManage() }
-
-// CmdAccountManage says "Manage Account…"
-// in the language of msgs.
-func (msgs Messages) CmdAccountManage() string {
-	return Catalog.Format(msgs.locale, "cmdAccountManage", nil)
-}
-
-// CmdAccountShow says "Show Settings Sync"
-// in the language the app shows.
-func CmdAccountShow() string { return In(i18n.Locale()).CmdAccountShow() }
-
-// CmdAccountShow says "Show Settings Sync"
-// in the language of msgs.
-func (msgs Messages) CmdAccountShow() string {
-	return Catalog.Format(msgs.locale, "cmdAccountShow", nil)
-}
-
-// CmdAccountSignIn says "Sign In…"
-// in the language the app shows.
-func CmdAccountSignIn() string { return In(i18n.Locale()).CmdAccountSignIn() }
-
-// CmdAccountSignIn says "Sign In…"
-// in the language of msgs.
-func (msgs Messages) CmdAccountSignIn() string {
-	return Catalog.Format(msgs.locale, "cmdAccountSignIn", nil)
-}
-
-// CmdAccountSignOut says "Sign Out of Settings Sync…"
-// in the language the app shows.
-func CmdAccountSignOut() string { return In(i18n.Locale()).CmdAccountSignOut() }
-
-// CmdAccountSignOut says "Sign Out of Settings Sync…"
-// in the language of msgs.
-func (msgs Messages) CmdAccountSignOut() string {
-	return Catalog.Format(msgs.locale, "cmdAccountSignOut", nil)
-}
-
-// CmdAccountSyncNow says "Sync Settings Now"
-// in the language the app shows.
-func CmdAccountSyncNow() string { return In(i18n.Locale()).CmdAccountSyncNow() }
-
-// CmdAccountSyncNow says "Sync Settings Now"
-// in the language of msgs.
-func (msgs Messages) CmdAccountSyncNow() string {
-	return Catalog.Format(msgs.locale, "cmdAccountSyncNow", nil)
 }
 
 // CmdEditCut says "Cut"
@@ -1900,16 +1756,6 @@ func (msgs Messages) CmdGitUnstageFile() string {
 	return Catalog.Format(msgs.locale, "cmdGitUnstageFile", nil)
 }
 
-// CmdGitWriteMessage says "Write Commit Message with AI"
-// in the language the app shows.
-func CmdGitWriteMessage() string { return In(i18n.Locale()).CmdGitWriteMessage() }
-
-// CmdGitWriteMessage says "Write Commit Message with AI"
-// in the language of msgs.
-func (msgs Messages) CmdGitWriteMessage() string {
-	return Catalog.Format(msgs.locale, "cmdGitWriteMessage", nil)
-}
-
 // CmdGoBracket says "Go to Bracket"
 // in the language the app shows.
 func CmdGoBracket() string { return In(i18n.Locale()).CmdGoBracket() }
@@ -2308,16 +2154,6 @@ func CmdViewExplorer() string { return In(i18n.Locale()).CmdViewExplorer() }
 // in the language of msgs.
 func (msgs Messages) CmdViewExplorer() string {
 	return Catalog.Format(msgs.locale, "cmdViewExplorer", nil)
-}
-
-// CmdViewLocaleSystem says "System Language"
-// in the language the app shows.
-func CmdViewLocaleSystem() string { return In(i18n.Locale()).CmdViewLocaleSystem() }
-
-// CmdViewLocaleSystem says "System Language"
-// in the language of msgs.
-func (msgs Messages) CmdViewLocaleSystem() string {
-	return Catalog.Format(msgs.locale, "cmdViewLocaleSystem", nil)
 }
 
 // CmdViewLockColumn says "Toggle Column Lock"
@@ -2932,46 +2768,6 @@ func CopyRelativePath() string { return In(i18n.Locale()).CopyRelativePath() }
 // in the language of msgs.
 func (msgs Messages) CopyRelativePath() string {
 	return Catalog.Format(msgs.locale, "copyRelativePath", nil)
-}
-
-// CrashDetail says "The report says where in Mayoi's code it happened, with Mayoi's version and your system. It holds none of your files,…"
-// in the language the app shows.
-func CrashDetail() string { return In(i18n.Locale()).CrashDetail() }
-
-// CrashDetail says "The report says where in Mayoi's code it happened, with Mayoi's version and your system. It holds none of your files,…"
-// in the language of msgs.
-func (msgs Messages) CrashDetail() string {
-	return Catalog.Format(msgs.locale, "crashDetail", nil)
-}
-
-// CrashDontAsk says "Don't ask again"
-// in the language the app shows.
-func CrashDontAsk() string { return In(i18n.Locale()).CrashDontAsk() }
-
-// CrashDontAsk says "Don't ask again"
-// in the language of msgs.
-func (msgs Messages) CrashDontAsk() string {
-	return Catalog.Format(msgs.locale, "crashDontAsk", nil)
-}
-
-// CrashQuestion says "Mayoi quit unexpectedly. Send a crash report?"
-// in the language the app shows.
-func CrashQuestion() string { return In(i18n.Locale()).CrashQuestion() }
-
-// CrashQuestion says "Mayoi quit unexpectedly. Send a crash report?"
-// in the language of msgs.
-func (msgs Messages) CrashQuestion() string {
-	return Catalog.Format(msgs.locale, "crashQuestion", nil)
-}
-
-// CrashRecoveredQuestion says "Mayoi ran into an error. Send an error report?"
-// in the language the app shows.
-func CrashRecoveredQuestion() string { return In(i18n.Locale()).CrashRecoveredQuestion() }
-
-// CrashRecoveredQuestion says "Mayoi ran into an error. Send an error report?"
-// in the language of msgs.
-func (msgs Messages) CrashRecoveredQuestion() string {
-	return Catalog.Format(msgs.locale, "crashRecoveredQuestion", nil)
 }
 
 // CreateBranchEllipsis says "Create Branch…"
@@ -5180,16 +4976,6 @@ func (msgs Messages) Menu() string {
 	return Catalog.Format(msgs.locale, "menu", nil)
 }
 
-// MenuAccount says "Account"
-// in the language the app shows.
-func MenuAccount() string { return In(i18n.Locale()).MenuAccount() }
-
-// MenuAccount says "Account"
-// in the language of msgs.
-func (msgs Messages) MenuAccount() string {
-	return Catalog.Format(msgs.locale, "menuAccount", nil)
-}
-
 // MenuEdit says "Edit"
 // in the language the app shows.
 func MenuEdit() string { return In(i18n.Locale()).MenuEdit() }
@@ -5238,16 +5024,6 @@ func MenuHelp() string { return In(i18n.Locale()).MenuHelp() }
 // in the language of msgs.
 func (msgs Messages) MenuHelp() string {
 	return Catalog.Format(msgs.locale, "menuHelp", nil)
-}
-
-// MenuLanguage says "Language"
-// in the language the app shows.
-func MenuLanguage() string { return In(i18n.Locale()).MenuLanguage() }
-
-// MenuLanguage says "Language"
-// in the language of msgs.
-func (msgs Messages) MenuLanguage() string {
-	return Catalog.Format(msgs.locale, "menuLanguage", nil)
 }
 
 // MenuOpenRecent says "Open Recent"
@@ -5308,16 +5084,6 @@ func MenuSelection() string { return In(i18n.Locale()).MenuSelection() }
 // in the language of msgs.
 func (msgs Messages) MenuSelection() string {
 	return Catalog.Format(msgs.locale, "menuSelection", nil)
-}
-
-// MenuSyncingAs says "Syncing Settings as {name}"
-// in the language the app shows.
-func MenuSyncingAs(name string) string { return In(i18n.Locale()).MenuSyncingAs(name) }
-
-// MenuSyncingAs says "Syncing Settings as {name}"
-// in the language of msgs.
-func (msgs Messages) MenuSyncingAs(name string) string {
-	return Catalog.Format(msgs.locale, "menuSyncingAs", map[string]any{"name": name})
 }
 
 // MenuTheme says "Theme"
@@ -9496,16 +9262,6 @@ func (msgs Messages) ScmStopAmending() string {
 	return Catalog.Format(msgs.locale, "scmStopAmending", nil)
 }
 
-// ScmStopWriting says "Stop Writing"
-// in the language the app shows.
-func ScmStopWriting() string { return In(i18n.Locale()).ScmStopWriting() }
-
-// ScmStopWriting says "Stop Writing"
-// in the language of msgs.
-func (msgs Messages) ScmStopWriting() string {
-	return Catalog.Format(msgs.locale, "scmStopWriting", nil)
-}
-
 // ScmSubmoduleCommit says "Submodule commit changed"
 // in the language the app shows.
 func ScmSubmoduleCommit() string { return In(i18n.Locale()).ScmSubmoduleCommit() }
@@ -9634,26 +9390,6 @@ func ScmHideCommitFiles() string { return In(i18n.Locale()).ScmHideCommitFiles()
 // in the language of msgs.
 func (msgs Messages) ScmHideCommitFiles() string {
 	return Catalog.Format(msgs.locale, "scmHideCommitFiles", nil)
-}
-
-// ScmWriteMessage says "Write the Message with AI"
-// in the language the app shows.
-func ScmWriteMessage() string { return In(i18n.Locale()).ScmWriteMessage() }
-
-// ScmWriteMessage says "Write the Message with AI"
-// in the language of msgs.
-func (msgs Messages) ScmWriteMessage() string {
-	return Catalog.Format(msgs.locale, "scmWriteMessage", nil)
-}
-
-// ScmWritingHint says "Reading the changes…"
-// in the language the app shows.
-func ScmWritingHint() string { return In(i18n.Locale()).ScmWritingHint() }
-
-// ScmWritingHint says "Reading the changes…"
-// in the language of msgs.
-func (msgs Messages) ScmWritingHint() string {
-	return Catalog.Format(msgs.locale, "scmWritingHint", nil)
 }
 
 // SearchClearResults says "Clear Search Results"
@@ -10218,528 +9954,6 @@ func SymbolPlaceholder() string { return In(i18n.Locale()).SymbolPlaceholder() }
 // in the language of msgs.
 func (msgs Messages) SymbolPlaceholder() string {
 	return Catalog.Format(msgs.locale, "symbolPlaceholder", nil)
-}
-
-// SyncChooseMessage says "This machine and your account both have settings of their own. Choose which to keep, here and in your account; from t…"
-// in the language the app shows.
-func SyncChooseMessage() string { return In(i18n.Locale()).SyncChooseMessage() }
-
-// SyncChooseMessage says "This machine and your account both have settings of their own. Choose which to keep, here and in your account; from t…"
-// in the language of msgs.
-func (msgs Messages) SyncChooseMessage() string {
-	return Catalog.Format(msgs.locale, "syncChooseMessage", nil)
-}
-
-// SyncChooseTitle says "Keep which settings?"
-// in the language the app shows.
-func SyncChooseTitle() string { return In(i18n.Locale()).SyncChooseTitle() }
-
-// SyncChooseTitle says "Keep which settings?"
-// in the language of msgs.
-func (msgs Messages) SyncChooseTitle() string {
-	return Catalog.Format(msgs.locale, "syncChooseTitle", nil)
-}
-
-// SyncCodeCopied says "Copied the code"
-// in the language the app shows.
-func SyncCodeCopied() string { return In(i18n.Locale()).SyncCodeCopied() }
-
-// SyncCodeCopied says "Copied the code"
-// in the language of msgs.
-func (msgs Messages) SyncCodeCopied() string {
-	return Catalog.Format(msgs.locale, "syncCodeCopied", nil)
-}
-
-// SyncCompare says "Compare"
-// in the language the app shows.
-func SyncCompare() string { return In(i18n.Locale()).SyncCompare() }
-
-// SyncCompare says "Compare"
-// in the language of msgs.
-func (msgs Messages) SyncCompare() string {
-	return Catalog.Format(msgs.locale, "syncCompare", nil)
-}
-
-// SyncConflictMessage says "keybindings.json changed here and on another machine. This machine's is in use, and the other's is beside it."
-// in the language the app shows.
-func SyncConflictMessage() string { return In(i18n.Locale()).SyncConflictMessage() }
-
-// SyncConflictMessage says "keybindings.json changed here and on another machine. This machine's is in use, and the other's is beside it."
-// in the language of msgs.
-func (msgs Messages) SyncConflictMessage() string {
-	return Catalog.Format(msgs.locale, "syncConflictMessage", nil)
-}
-
-// SyncConflictTitle says "Keyboard shortcuts to merge"
-// in the language the app shows.
-func SyncConflictTitle() string { return In(i18n.Locale()).SyncConflictTitle() }
-
-// SyncConflictTitle says "Keyboard shortcuts to merge"
-// in the language of msgs.
-func (msgs Messages) SyncConflictTitle() string {
-	return Catalog.Format(msgs.locale, "syncConflictTitle", nil)
-}
-
-// SyncCopyCode says "Copy Code"
-// in the language the app shows.
-func SyncCopyCode() string { return In(i18n.Locale()).SyncCopyCode() }
-
-// SyncCopyCode says "Copy Code"
-// in the language of msgs.
-func (msgs Messages) SyncCopyCode() string {
-	return Catalog.Format(msgs.locale, "syncCopyCode", nil)
-}
-
-// SyncCouldNot says "Couldn't sync"
-// in the language the app shows.
-func SyncCouldNot() string { return In(i18n.Locale()).SyncCouldNot() }
-
-// SyncCouldNot says "Couldn't sync"
-// in the language of msgs.
-func (msgs Messages) SyncCouldNot() string {
-	return Catalog.Format(msgs.locale, "syncCouldNot", nil)
-}
-
-// SyncDeclined says "The sign-in was declined"
-// in the language the app shows.
-func SyncDeclined() string { return In(i18n.Locale()).SyncDeclined() }
-
-// SyncDeclined says "The sign-in was declined"
-// in the language of msgs.
-func (msgs Messages) SyncDeclined() string {
-	return Catalog.Format(msgs.locale, "syncDeclined", nil)
-}
-
-// SyncDone says "Settings synced"
-// in the language the app shows.
-func SyncDone() string { return In(i18n.Locale()).SyncDone() }
-
-// SyncDone says "Settings synced"
-// in the language of msgs.
-func (msgs Messages) SyncDone() string {
-	return Catalog.Format(msgs.locale, "syncDone", nil)
-}
-
-// SyncExpired says "The sign-in code expired. Try again."
-// in the language the app shows.
-func SyncExpired() string { return In(i18n.Locale()).SyncExpired() }
-
-// SyncExpired says "The sign-in code expired. Try again."
-// in the language of msgs.
-func (msgs Messages) SyncExpired() string {
-	return Catalog.Format(msgs.locale, "syncExpired", nil)
-}
-
-// SyncFailed says "Couldn't sync settings: {error}"
-// in the language the app shows.
-func SyncFailed(error string) string { return In(i18n.Locale()).SyncFailed(error) }
-
-// SyncFailed says "Couldn't sync settings: {error}"
-// in the language of msgs.
-func (msgs Messages) SyncFailed(error string) string {
-	return Catalog.Format(msgs.locale, "syncFailed", map[string]any{"error": error})
-}
-
-// SyncGettingCode says "Getting a code…"
-// in the language the app shows.
-func SyncGettingCode() string { return In(i18n.Locale()).SyncGettingCode() }
-
-// SyncGettingCode says "Getting a code…"
-// in the language of msgs.
-func (msgs Messages) SyncGettingCode() string {
-	return Catalog.Format(msgs.locale, "syncGettingCode", nil)
-}
-
-// SyncKeepHint says "Keep single settings here with syncIgnored…"
-// in the language the app shows.
-func SyncKeepHint() string { return In(i18n.Locale()).SyncKeepHint() }
-
-// SyncKeepHint says "Keep single settings here with syncIgnored…"
-// in the language of msgs.
-func (msgs Messages) SyncKeepHint() string {
-	return Catalog.Format(msgs.locale, "syncKeepHint", nil)
-}
-
-// SyncKeepMine says "Keep Mine"
-// in the language the app shows.
-func SyncKeepMine() string { return In(i18n.Locale()).SyncKeepMine() }
-
-// SyncKeepMine says "Keep Mine"
-// in the language of msgs.
-func (msgs Messages) SyncKeepMine() string {
-	return Catalog.Format(msgs.locale, "syncKeepMine", nil)
-}
-
-// SyncKeptHere says "{count, plural, one {All but # kept here} other {All but # kept here}}"
-// in the language the app shows.
-func SyncKeptHere(count int) string { return In(i18n.Locale()).SyncKeptHere(count) }
-
-// SyncKeptHere says "{count, plural, one {All but # kept here} other {All but # kept here}}"
-// in the language of msgs.
-func (msgs Messages) SyncKeptHere(count int) string {
-	return Catalog.Format(msgs.locale, "syncKeptHere", map[string]any{"count": count})
-}
-
-// SyncKeybindingsConflict says "keybindings.json changed here and on another machine: this one stays, and the other is beside it to merge"
-// in the language the app shows.
-func SyncKeybindingsConflict() string { return In(i18n.Locale()).SyncKeybindingsConflict() }
-
-// SyncKeybindingsConflict says "keybindings.json changed here and on another machine: this one stays, and the other is beside it to merge"
-// in the language of msgs.
-func (msgs Messages) SyncKeybindingsConflict() string {
-	return Catalog.Format(msgs.locale, "syncKeybindingsConflict", nil)
-}
-
-// SyncManage says "Manage Account"
-// in the language the app shows.
-func SyncManage() string { return In(i18n.Locale()).SyncManage() }
-
-// SyncManage says "Manage Account"
-// in the language of msgs.
-func (msgs Messages) SyncManage() string {
-	return Catalog.Format(msgs.locale, "syncManage", nil)
-}
-
-// SyncNever says "Not synced yet"
-// in the language the app shows.
-func SyncNever() string { return In(i18n.Locale()).SyncNever() }
-
-// SyncNever says "Not synced yet"
-// in the language of msgs.
-func (msgs Messages) SyncNever() string {
-	return Catalog.Format(msgs.locale, "syncNever", nil)
-}
-
-// SyncNoConflict says "No keyboard shortcuts wait to be merged"
-// in the language the app shows.
-func SyncNoConflict() string { return In(i18n.Locale()).SyncNoConflict() }
-
-// SyncNoConflict says "No keyboard shortcuts wait to be merged"
-// in the language of msgs.
-func (msgs Messages) SyncNoConflict() string {
-	return Catalog.Format(msgs.locale, "syncNoConflict", nil)
-}
-
-// SyncNoKeyring says "Settings sync needs a keyring to keep its sign-in, as GNOME Keyring or KWallet"
-// in the language the app shows.
-func SyncNoKeyring() string { return In(i18n.Locale()).SyncNoKeyring() }
-
-// SyncNoKeyring says "Settings sync needs a keyring to keep its sign-in, as GNOME Keyring or KWallet"
-// in the language of msgs.
-func (msgs Messages) SyncNoKeyring() string {
-	return Catalog.Format(msgs.locale, "syncNoKeyring", nil)
-}
-
-// SyncNotYet says "Waiting for the first sync"
-// in the language the app shows.
-func SyncNotYet() string { return In(i18n.Locale()).SyncNotYet() }
-
-// SyncNotYet says "Waiting for the first sync"
-// in the language of msgs.
-func (msgs Messages) SyncNotYet() string {
-	return Catalog.Format(msgs.locale, "syncNotYet", nil)
-}
-
-// SyncOffline says "Can't reach {host}"
-// in the language the app shows.
-func SyncOffline(host string) string { return In(i18n.Locale()).SyncOffline(host) }
-
-// SyncOffline says "Can't reach {host}"
-// in the language of msgs.
-func (msgs Messages) SyncOffline(host string) string {
-	return Catalog.Format(msgs.locale, "syncOffline", map[string]any{"host": host})
-}
-
-// SyncOpenBrowser says "Open Browser"
-// in the language the app shows.
-func SyncOpenBrowser() string { return In(i18n.Locale()).SyncOpenBrowser() }
-
-// SyncOpenBrowser says "Open Browser"
-// in the language of msgs.
-func (msgs Messages) SyncOpenBrowser() string {
-	return Catalog.Format(msgs.locale, "syncOpenBrowser", nil)
-}
-
-// SyncPanelLabel says "Settings Sync: {name}"
-// in the language the app shows.
-func SyncPanelLabel(name string) string { return In(i18n.Locale()).SyncPanelLabel(name) }
-
-// SyncPanelLabel says "Settings Sync: {name}"
-// in the language of msgs.
-func (msgs Messages) SyncPanelLabel(name string) string {
-	return Catalog.Format(msgs.locale, "syncPanelLabel", map[string]any{"name": name})
-}
-
-// SyncRetryIn says "{reason}. Trying again in {time}"
-// in the language the app shows.
-func SyncRetryIn(reason string, time_ string) string {
-	return In(i18n.Locale()).SyncRetryIn(reason, time_)
-}
-
-// SyncRetryIn says "{reason}. Trying again in {time}"
-// in the language of msgs.
-func (msgs Messages) SyncRetryIn(reason string, time_ string) string {
-	return Catalog.Format(msgs.locale, "syncRetryIn", map[string]any{"reason": reason, "time": time_})
-}
-
-// SyncServerTrouble says "{host} is having trouble"
-// in the language the app shows.
-func SyncServerTrouble(host string) string { return In(i18n.Locale()).SyncServerTrouble(host) }
-
-// SyncServerTrouble says "{host} is having trouble"
-// in the language of msgs.
-func (msgs Messages) SyncServerTrouble(host string) string {
-	return Catalog.Format(msgs.locale, "syncServerTrouble", map[string]any{"host": host})
-}
-
-// SyncSessionEnded says "Settings sync was signed out. Sign in again to keep syncing."
-// in the language the app shows.
-func SyncSessionEnded() string { return In(i18n.Locale()).SyncSessionEnded() }
-
-// SyncSessionEnded says "Settings sync was signed out. Sign in again to keep syncing."
-// in the language of msgs.
-func (msgs Messages) SyncSessionEnded() string {
-	return Catalog.Format(msgs.locale, "syncSessionEnded", nil)
-}
-
-// SyncSettings says "Settings"
-// in the language the app shows.
-func SyncSettings() string { return In(i18n.Locale()).SyncSettings() }
-
-// SyncSettings says "Settings"
-// in the language of msgs.
-func (msgs Messages) SyncSettings() string {
-	return Catalog.Format(msgs.locale, "syncSettings", nil)
-}
-
-// SyncShortcuts says "Keyboard Shortcuts"
-// in the language the app shows.
-func SyncShortcuts() string { return In(i18n.Locale()).SyncShortcuts() }
-
-// SyncShortcuts says "Keyboard Shortcuts"
-// in the language of msgs.
-func (msgs Messages) SyncShortcuts() string {
-	return Catalog.Format(msgs.locale, "syncShortcuts", nil)
-}
-
-// SyncSignInFailed says "Couldn't sign in: {error}"
-// in the language the app shows.
-func SyncSignInFailed(error string) string { return In(i18n.Locale()).SyncSignInFailed(error) }
-
-// SyncSignInFailed says "Couldn't sign in: {error}"
-// in the language of msgs.
-func (msgs Messages) SyncSignInFailed(error string) string {
-	return Catalog.Format(msgs.locale, "syncSignInFailed", map[string]any{"error": error})
-}
-
-// SyncSignInLead says "Your settings and keyboard shortcuts follow you to each machine you sign in on."
-// in the language the app shows.
-func SyncSignInLead() string { return In(i18n.Locale()).SyncSignInLead() }
-
-// SyncSignInLead says "Your settings and keyboard shortcuts follow you to each machine you sign in on."
-// in the language of msgs.
-func (msgs Messages) SyncSignInLead() string {
-	return Catalog.Format(msgs.locale, "syncSignInLead", nil)
-}
-
-// SyncSignInTitle says "Sign In to Sync Settings"
-// in the language the app shows.
-func SyncSignInTitle() string { return In(i18n.Locale()).SyncSignInTitle() }
-
-// SyncSignInTitle says "Sign In to Sync Settings"
-// in the language of msgs.
-func (msgs Messages) SyncSignInTitle() string {
-	return Catalog.Format(msgs.locale, "syncSignInTitle", nil)
-}
-
-// SyncSignOut says "Sign Out"
-// in the language the app shows.
-func SyncSignOut() string { return In(i18n.Locale()).SyncSignOut() }
-
-// SyncSignOut says "Sign Out"
-// in the language of msgs.
-func (msgs Messages) SyncSignOut() string {
-	return Catalog.Format(msgs.locale, "syncSignOut", nil)
-}
-
-// SyncSignOutMessage says "Your settings stay as they are, on this machine and in your account. Sign in again any time to keep syncing."
-// in the language the app shows.
-func SyncSignOutMessage() string { return In(i18n.Locale()).SyncSignOutMessage() }
-
-// SyncSignOutMessage says "Your settings stay as they are, on this machine and in your account. Sign in again any time to keep syncing."
-// in the language of msgs.
-func (msgs Messages) SyncSignOutMessage() string {
-	return Catalog.Format(msgs.locale, "syncSignOutMessage", nil)
-}
-
-// SyncSignOutTitle says "Sign out of settings sync as {name}?"
-// in the language the app shows.
-func SyncSignOutTitle(name string) string { return In(i18n.Locale()).SyncSignOutTitle(name) }
-
-// SyncSignOutTitle says "Sign out of settings sync as {name}?"
-// in the language of msgs.
-func (msgs Messages) SyncSignOutTitle(name string) string {
-	return Catalog.Format(msgs.locale, "syncSignOutTitle", map[string]any{"name": name})
-}
-
-// SyncSignedIn says "Signed in as {name}: settings and shortcuts sync"
-// in the language the app shows.
-func SyncSignedIn(name string) string { return In(i18n.Locale()).SyncSignedIn(name) }
-
-// SyncSignedIn says "Signed in as {name}: settings and shortcuts sync"
-// in the language of msgs.
-func (msgs Messages) SyncSignedIn(name string) string {
-	return Catalog.Format(msgs.locale, "syncSignedIn", map[string]any{"name": name})
-}
-
-// SyncSignedOut says "Signed out of settings sync"
-// in the language the app shows.
-func SyncSignedOut() string { return In(i18n.Locale()).SyncSignedOut() }
-
-// SyncSignedOut says "Signed out of settings sync"
-// in the language of msgs.
-func (msgs Messages) SyncSignedOut() string {
-	return Catalog.Format(msgs.locale, "syncSignedOut", nil)
-}
-
-// SyncStepApprove says "Approve it, then come back here"
-// in the language the app shows.
-func SyncStepApprove() string { return In(i18n.Locale()).SyncStepApprove() }
-
-// SyncStepApprove says "Approve it, then come back here"
-// in the language of msgs.
-func (msgs Messages) SyncStepApprove() string {
-	return Catalog.Format(msgs.locale, "syncStepApprove", nil)
-}
-
-// SyncStepCheck says "Check that the page shows this code"
-// in the language the app shows.
-func SyncStepCheck() string { return In(i18n.Locale()).SyncStepCheck() }
-
-// SyncStepCheck says "Check that the page shows this code"
-// in the language of msgs.
-func (msgs Messages) SyncStepCheck() string {
-	return Catalog.Format(msgs.locale, "syncStepCheck", nil)
-}
-
-// SyncStepSignIn says "Sign in on {host} with GitHub or Google"
-// in the language the app shows.
-func SyncStepSignIn(host string) string { return In(i18n.Locale()).SyncStepSignIn(host) }
-
-// SyncStepSignIn says "Sign in on {host} with GitHub or Google"
-// in the language of msgs.
-func (msgs Messages) SyncStepSignIn(host string) string {
-	return Catalog.Format(msgs.locale, "syncStepSignIn", map[string]any{"host": host})
-}
-
-// SyncSyncedAgo says "Synced {ago}"
-// in the language the app shows.
-func SyncSyncedAgo(ago string) string { return In(i18n.Locale()).SyncSyncedAgo(ago) }
-
-// SyncSyncedAgo says "Synced {ago}"
-// in the language of msgs.
-func (msgs Messages) SyncSyncedAgo(ago string) string {
-	return Catalog.Format(msgs.locale, "syncSyncedAgo", map[string]any{"ago": ago})
-}
-
-// SyncSyncing says "Syncing…"
-// in the language the app shows.
-func SyncSyncing() string { return In(i18n.Locale()).SyncSyncing() }
-
-// SyncSyncing says "Syncing…"
-// in the language of msgs.
-func (msgs Messages) SyncSyncing() string {
-	return Catalog.Format(msgs.locale, "syncSyncing", nil)
-}
-
-// SyncUpToDate says "Settings are up to date"
-// in the language the app shows.
-func SyncUpToDate() string { return In(i18n.Locale()).SyncUpToDate() }
-
-// SyncUpToDate says "Settings are up to date"
-// in the language of msgs.
-func (msgs Messages) SyncUpToDate() string {
-	return Catalog.Format(msgs.locale, "syncUpToDate", nil)
-}
-
-// SyncUpToDateTitle says "Up to date"
-// in the language the app shows.
-func SyncUpToDateTitle() string { return In(i18n.Locale()).SyncUpToDateTitle() }
-
-// SyncUpToDateTitle says "Up to date"
-// in the language of msgs.
-func (msgs Messages) SyncUpToDateTitle() string {
-	return Catalog.Format(msgs.locale, "syncUpToDateTitle", nil)
-}
-
-// SyncUseAccount says "Use Account's"
-// in the language the app shows.
-func SyncUseAccount() string { return In(i18n.Locale()).SyncUseAccount() }
-
-// SyncUseAccount says "Use Account's"
-// in the language of msgs.
-func (msgs Messages) SyncUseAccount() string {
-	return Catalog.Format(msgs.locale, "syncUseAccount", nil)
-}
-
-// SyncUseAccountShort says "Account's"
-// in the language the app shows.
-func SyncUseAccountShort() string { return In(i18n.Locale()).SyncUseAccountShort() }
-
-// SyncUseAccountShort says "Account's"
-// in the language of msgs.
-func (msgs Messages) SyncUseAccountShort() string {
-	return Catalog.Format(msgs.locale, "syncUseAccountShort", nil)
-}
-
-// SyncUseLocal says "Use This Machine's"
-// in the language the app shows.
-func SyncUseLocal() string { return In(i18n.Locale()).SyncUseLocal() }
-
-// SyncUseLocal says "Use This Machine's"
-// in the language of msgs.
-func (msgs Messages) SyncUseLocal() string {
-	return Catalog.Format(msgs.locale, "syncUseLocal", nil)
-}
-
-// SyncUseLocalShort says "This Machine's"
-// in the language the app shows.
-func SyncUseLocalShort() string { return In(i18n.Locale()).SyncUseLocalShort() }
-
-// SyncUseLocalShort says "This Machine's"
-// in the language of msgs.
-func (msgs Messages) SyncUseLocalShort() string {
-	return Catalog.Format(msgs.locale, "syncUseLocalShort", nil)
-}
-
-// SyncWaiting says "Waiting for approval…"
-// in the language the app shows.
-func SyncWaiting() string { return In(i18n.Locale()).SyncWaiting() }
-
-// SyncWaiting says "Waiting for approval…"
-// in the language of msgs.
-func (msgs Messages) SyncWaiting() string {
-	return Catalog.Format(msgs.locale, "syncWaiting", nil)
-}
-
-// SyncWaitingExpires says "Waiting for approval · the code expires in {time}"
-// in the language the app shows.
-func SyncWaitingExpires(time_ string) string { return In(i18n.Locale()).SyncWaitingExpires(time_) }
-
-// SyncWaitingExpires says "Waiting for approval · the code expires in {time}"
-// in the language of msgs.
-func (msgs Messages) SyncWaitingExpires(time_ string) string {
-	return Catalog.Format(msgs.locale, "syncWaitingExpires", map[string]any{"time": time_})
-}
-
-// SyncWhatSyncs says "Syncs on this machine"
-// in the language the app shows.
-func SyncWhatSyncs() string { return In(i18n.Locale()).SyncWhatSyncs() }
-
-// SyncWhatSyncs says "Syncs on this machine"
-// in the language of msgs.
-func (msgs Messages) SyncWhatSyncs() string {
-	return Catalog.Format(msgs.locale, "syncWhatSyncs", nil)
 }
 
 // SyncedWith says "Synchronized with {upstream}"

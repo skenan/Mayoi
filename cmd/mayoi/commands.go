@@ -54,12 +54,6 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"file.reopenClosed", t.CmdFileReopenClosed(), "Shift+CmdOrCtrl+T", a.reopenClosed},
 		{"file.closeFolder", t.CmdFileCloseFolder(), "", a.closeFolder},
 		{"file.closeProject", t.CmdFileCloseProject(), "", func() { a.host.closeProject() }},
-		{"account.signIn", t.CmdAccountSignIn(), "", func() { a.host.signIn() }},
-		{"account.show", t.CmdAccountShow(), "", a.showSync},
-		{"account.syncNow", t.CmdAccountSyncNow(), "", a.syncNow},
-		{"account.compareKeybindings", t.CmdAccountCompareKeybindings(), "", a.compareKeybindings},
-		{"account.manage", t.CmdAccountManage(), "", func() { a.services.OpenURL(monURL()) }},
-		{"account.signOut", t.CmdAccountSignOut(), "", a.confirmSignOut},
 		{"file.installCLI", t.CmdFileInstallCLI(), "", func() { a.host.installCLI() }},
 		{"file.uninstallCLI", t.CmdFileUninstallCLI(), "", func() { a.host.uninstallCLI() }},
 		// Undo and Redo take no keys in the menu: ⌘Z goes to the focused
@@ -110,7 +104,6 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"git.commit", t.CmdGitCommit(), "", func() { a.commit(false) }},
 		{"git.commitPush", t.CmdGitCommitPush(), "", func() { a.commit(true) }},
 		{"git.amend", t.CmdGitAmend(), "", func() { a.showSourceControl(); a.startAmend() }},
-		{"git.writeMessage", t.CmdGitWriteMessage(), "", func() { a.showSourceControl(); a.writeMessage() }},
 		{"git.openChanges", t.CmdGitOpenChanges(), "", a.openChanges},
 		{"git.openAllChanges", t.CmdGitOpenAllChanges(), "", func() { a.openChangesTab(true) }},
 		{"git.compareFiles", t.CmdGitCompareFiles(), "", a.compareLocalFiles},
@@ -194,11 +187,6 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"view.theme.claude", "Claude", "", func() { a.setTheme(themeClaude) }},
 		{"view.theme.qoder", "Qoder", "", func() { a.setTheme(themeQoder) }},
 		{"view.theme.grokbot", "Grok Bot", "", func() { a.setTheme(themeGrokBot) }},
-		{localeCommand + "system", t.CmdViewLocaleSystem(), "", func() { a.setLocale("") }},
-	}
-	// The languages, each named in itself.
-	for _, tag := range mygo.App.Languages() {
-		cmds = append(cmds, command{localeCommand + tag, i18n.Autonym(tag), "", func() { a.setLocale(tag) }})
 	}
 	for i := range cmds {
 		cmds[i].accel = platformAccel(cmds[i].id, cmds[i].accel)
@@ -324,38 +312,6 @@ func (a *app) themeChanged() {
 	a.host.setTheme(a.settings.Theme, a.settings.Appearance)
 }
 
-// localeCommand is the prefix of the commands that choose the language,
-// before its tag or "system".
-const localeCommand = "view.locale."
-
-// setLocale shows the app in the language of tag, or in the system's for
-// "", in every window.
-func (a *app) setLocale(tag string) {
-	a.settings.Locale = tag
-	a.settings.Changed()
-	a.host.setLocale(tag)
-}
-
-// localeOn reports whether the settings choose the language of tag, of
-// the app's languages, or the system's for "system": "zh" in the settings
-// chooses "zh-Hans".
-func (a *app) localeOn(tag string) bool {
-	if tag == "system" || a.settings.Locale == "" {
-		return tag == "system" && a.settings.Locale == ""
-	}
-	return i18n.Match([]string{a.settings.Locale}, mygo.App.Languages()) == tag
-}
-
-// syncNow syncs the settings with the account at once, or signs in to
-// sync them.
-func (a *app) syncNow() {
-	if a.host.account() == "" {
-		a.host.signIn()
-		return
-	}
-	a.host.syncNow()
-}
-
 // openSettings opens the settings file in a tab, as they are now. The
 // preferences in it apply as it is saved.
 func (a *app) openSettings() {
@@ -440,11 +396,6 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 		return it
 	}
 	theme := func(id, th string) *mygo.MenuItem { return radio(id, a.settings.Theme == th) }
-	// The system's language, then each of the app's.
-	languages := []*mygo.MenuItem{radio(localeCommand+"system", a.localeOn("system")), mygo.Separator()}
-	for _, tag := range mygo.App.Languages() {
-		languages = append(languages, radio(localeCommand+tag, a.localeOn(tag)))
-	}
 	// The recent folders but the window's, and the box of them all.
 	var recent []*mygo.MenuItem
 	for _, dir := range a.settings.RecentExcept(a.root) {
@@ -480,29 +431,18 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 	if cli {
 		file = append(file, mygo.Separator(), item("file.installCLI"), item("file.uninstallCLI"))
 	}
-	// Settings sync: who it syncs for, or signing in.
-	var account []*mygo.MenuItem
-	if name := a.host.account(); name != "" {
-		account = []*mygo.MenuItem{
-			{Label: locales.MenuSyncingAs(name), Disabled: true}, item("account.syncNow"), item("account.manage"), item("account.signOut"),
-		}
-	} else {
-		account = []*mygo.MenuItem{item("account.signIn")}
-	}
 	// The app menu of macOS, as RoleAppMenu makes it, with room for
-	// "Check for Updates…" after About and for settings sync, and the Help
-	// menu elsewhere with them.
+	// "Check for Updates…" after About, and the Help menu elsewhere with it.
 	var help []*mygo.MenuItem
 	about := []*mygo.MenuItem{{Role: mygo.RoleAbout}}
 	if mygo.Updater.Enabled() {
 		about = append(about, a.updateItem())
 		help = append(help, a.updateItem(), mygo.Separator())
 	}
-	help = append(help, account...)
 	appMenu := &mygo.MenuItem{Role: mygo.RoleAppMenu}
 	if runtime.GOOS == "darwin" {
 		help = nil
-		appMenu = &mygo.MenuItem{Label: mygo.App.Name(), Submenu: slices.Concat(about, []*mygo.MenuItem{mygo.Separator()}, account, []*mygo.MenuItem{
+		appMenu = &mygo.MenuItem{Label: mygo.App.Name(), Submenu: slices.Concat(about, []*mygo.MenuItem{
 			mygo.Separator(),
 			{Role: mygo.RoleServices}, mygo.Separator(),
 			{Role: mygo.RoleHide}, {Role: mygo.RoleHideOthers}, {Role: mygo.RoleUnhide}, mygo.Separator(),
@@ -556,7 +496,7 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 				mygo.Separator(), theme("view.theme.mayoi", ""), theme("view.theme.matrix", themeMatrix), theme("view.theme.claude", themeClaude),
 				theme("view.theme.qoder", themeQoder), theme("view.theme.grokbot", themeGrokBot),
 			}},
-			{Label: locales.MenuLanguage(), Submenu: languages}, mygo.Separator(),
+			mygo.Separator(),
 			{Role: mygo.RoleToggleFullScreen}, {Role: mygo.RoleToggleDevTools},
 		}},
 		{Label: locales.MenuGo(), Submenu: []*mygo.MenuItem{

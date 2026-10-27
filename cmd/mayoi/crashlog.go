@@ -128,8 +128,7 @@ var recovered struct {
 
 // recoverCrash, deferred first in a goroutine that only reads, as a git
 // status or a search, keeps a panic in it from ending Mayoi: the
-// goroutine ends, and the panic's log is kept in the crashes folder, for
-// the next launch to offer to send.
+// goroutine ends, and the panic's log is kept in the crashes folder.
 func recoverCrash() {
 	if r := recover(); r != nil {
 		keepRecovered(r, debug.Stack())
@@ -191,4 +190,61 @@ func panicStack(stack string) string {
 		}
 	}
 	return stack
+}
+
+// The kinds of crash log, as their names in the crashes folder end:
+// -recovered for a panic Mayoi recovered from, -system for the system's
+// report.
+const (
+	crashFatal     = "fatal"
+	crashRecovered = "recovered"
+	crashSystem    = "ips"
+)
+
+// The states of a crash log, as its name ends: .log not asked about yet,
+// .send.log to send, .sent.log sent and .unsent.log not to.
+const (
+	crashPending = ""
+	crashQueued  = "send"
+	crashSent    = "sent"
+	crashUnsent  = "unsent"
+)
+
+// crashLog is a log in the crashes folder.
+type crashLog struct {
+	path, stem, state, kind string
+	// at is when it crashed.
+	at time.Time
+}
+
+// listCrashes returns the crash logs in dir, oldest first.
+func listCrashes(dir string) []crashLog {
+	entries, _ := os.ReadDir(dir)
+	var out []crashLog
+	for _, e := range entries {
+		base, ok := strings.CutSuffix(e.Name(), ".log")
+		if e.IsDir() || !ok {
+			continue
+		}
+		c := crashLog{path: filepath.Join(dir, e.Name()), stem: base, kind: crashFatal}
+		if i := strings.LastIndexByte(base, '.'); i >= 0 {
+			c.stem, c.state = base[:i], base[i+1:]
+		}
+		if !slices.Contains([]string{crashPending, crashQueued, crashSent, crashUnsent}, c.state) || len(c.stem) < len(crashTime) {
+			continue
+		}
+		at, err := time.ParseInLocation(crashTime, c.stem[:len(crashTime)], time.Local)
+		if err != nil {
+			continue
+		}
+		c.at = at
+		switch {
+		case strings.Contains(c.stem, "-recovered"):
+			c.kind = crashRecovered
+		case strings.Contains(c.stem, "-system"):
+			c.kind = crashSystem
+		}
+		out = append(out, c)
+	}
+	return out
 }

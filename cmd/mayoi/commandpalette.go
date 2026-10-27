@@ -12,13 +12,11 @@ import (
 )
 
 // paletteEntry is a command as the command palette lists it: its title,
-// as "View: Toggle Sidebar", and the keys of its shortcut. en is its title
-// in English, which the palette matches too, when the language shown is
-// another.
+// as "View: Toggle Sidebar", and the keys of its shortcut.
 type paletteEntry struct {
-	id, title, en string
-	group         int // the length of the title's "View: "
-	caps          []string
+	id, title string
+	group     int // the length of the title's "View: "
+	caps      []string
 }
 
 // commandGroup names the menu of a command, by the prefix of its id, in
@@ -27,8 +25,6 @@ func commandGroup(t locales.Messages, id string) string {
 	switch {
 	case strings.HasPrefix(id, "view.appearance."), strings.HasPrefix(id, "view.theme."):
 		return t.MenuTheme()
-	case strings.HasPrefix(id, localeCommand):
-		return t.MenuLanguage()
 	}
 	switch id[:strings.IndexByte(id, '.')] {
 	case "file":
@@ -45,8 +41,6 @@ func commandGroup(t locales.Messages, id string) string {
 		return t.MenuGit()
 	case "review":
 		return t.MenuReview()
-	case "account":
-		return t.MenuAccount()
 	}
 	return ""
 }
@@ -62,28 +56,19 @@ var viewKeys = map[string]string{
 }
 
 // paletteEntries are the commands the palette runs, by title, made once
-// for the window, and again when the language changes: the commands do
-// not change.
+// for the window: the commands do not change.
 func (a *app) paletteEntries() []paletteEntry {
 	if a.palette != nil {
 		return a.palette
 	}
-	shown, en := locales.In(i18n.Locale()), locales.In("en")
-	english := map[string]string{}
-	for _, cmd := range a.commandsIn(en) {
-		english[cmd.id] = commandGroup(en, cmd.id) + ": " + cmd.label
-	}
-	for _, cmd := range a.commandsIn(shown) {
+	t := locales.In(i18n.Locale())
+	for _, cmd := range a.commandsIn(t) {
 		if cmd.id == "go.commands" {
 			continue
 		}
-		group := commandGroup(shown, cmd.id)
+		group := commandGroup(t, cmd.id)
 		title := group + ": " + cmd.label
-		e := paletteEntry{id: cmd.id, title: title, group: len(group) + 2, caps: a.commandCaps(cmd)}
-		if english[cmd.id] != title {
-			e.en = english[cmd.id]
-		}
-		a.palette = append(a.palette, e)
+		a.palette = append(a.palette, paletteEntry{id: cmd.id, title: title, group: len(group) + 2, caps: a.commandCaps(cmd)})
 	}
 	slices.SortStableFunc(a.palette, func(x, y paletteEntry) int { return strings.Compare(x.title, y.title) })
 	return a.palette
@@ -113,9 +98,6 @@ func (a *app) commandOn(id string) bool {
 	}
 	if pos, ok := strings.CutPrefix(id, "view.panelPosition."); ok {
 		return a.panelSide() == pos
-	}
-	if tag, ok := strings.CutPrefix(id, localeCommand); ok {
-		return a.localeOn(tag)
 	}
 	if ap, ok := strings.CutPrefix(id, "view.appearance."); ok {
 		return s.Appearance == ap
@@ -294,32 +276,14 @@ func (a *app) quickCommands(c *ui.Context, query string) {
 	})
 }
 
-// paletteMatches are the commands that query matches, best first: by their
-// titles, or by their English ones, whose matched characters do not show.
+// paletteMatches are the commands that query matches by their titles,
+// best first.
 func paletteMatches(entries []paletteEntry, query string) []workspace.Match {
 	titles := make([]string, len(entries))
-	english := make([]string, len(entries))
-	other := false
 	for i, e := range entries {
-		titles[i], english[i] = e.title, e.en
-		other = other || e.en != ""
+		titles[i] = e.title
 	}
-	matches := workspace.Fuzzy(titles, query, len(entries))
-	if !other || query == "" {
-		return matches
-	}
-	found := map[int]bool{}
-	for _, m := range matches {
-		found[m.Index] = true
-	}
-	for _, m := range workspace.Fuzzy(english, query, len(entries)) {
-		if !found[m.Index] && english[m.Index] != "" {
-			m.Positions = nil
-			matches = append(matches, m)
-		}
-	}
-	slices.SortStableFunc(matches, func(x, y workspace.Match) int { return y.Score - x.Score })
-	return matches
+	return workspace.Fuzzy(titles, query, len(entries))
 }
 
 // commandRow shows a command of the results: its menu, its name with the

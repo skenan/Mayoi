@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/png"
 	"mayoi/internal/bg"
-	"mayoi/internal/mon"
 	"mayoi/internal/settings"
 	"os"
 	"path/filepath"
@@ -19,22 +18,13 @@ import (
 
 // fakeHost answers the app's dialogs as a test says.
 type fakeHost struct {
-	folder string
-	// signedIn is the name settings sync syncs for, and signIns, syncs
-	// and signOuts count the commands of settings sync.
-	signedIn                 string
-	signIns, syncs, signOuts int
-	// sync is how settings sync shows, but for the name, and resolved
-	// counts the conflicts said to be resolved.
-	sync     syncInfo
-	resolved int
-	saveTo   string
-	choice   int
-	asked    []string
-	title    string
-	locale   string // the language setLocale chose
-	closed   bool
-	trashed  []string
+	folder  string
+	saveTo  string
+	choice  int
+	asked   []string
+	title   string
+	closed  bool
+	trashed []string
 	// revealed are the paths asked to show in the Finder.
 	revealed []string
 	// others are the folders other windows have open, and windows those
@@ -52,10 +42,6 @@ type fakeHost struct {
 	image     []byte
 	// chosen are the paths the dialog of choosePaths answers.
 	chosen []string
-	// aiClient is what ai returns, and aiSignOuts counts the tokens Mon
-	// refused.
-	aiClient   *mon.Client
-	aiSignOuts int
 	// newVersion is the update a check found, and updateOpens counts the
 	// update windows opened.
 	newVersion  string
@@ -91,7 +77,6 @@ func (h *fakeHost) choosePaths(title, _, _ string, _ bool, done func([]string)) 
 }
 func (h *fakeHost) closeWindow()         { h.closed = true }
 func (h *fakeHost) setTheme(_, _ string) {}
-func (h *fakeHost) setLocale(tag string) { h.locale = tag }
 func (h *fakeHost) showFolder(dir string) bool {
 	return slices.Contains(h.others, dir)
 }
@@ -103,29 +88,13 @@ func (h *fakeHost) menuChanged()              {}
 func (h *fakeHost) redrawWindows()            {}
 func (h *fakeHost) installCLI()               {}
 func (h *fakeHost) uninstallCLI()             {}
-func (h *fakeHost) account() string           { return h.signedIn }
-func (h *fakeHost) signIn()                   { h.signIns++ }
-func (h *fakeHost) signOut()                  { h.signOuts++ }
-func (h *fakeHost) syncNow()                  { h.syncs++ }
-func (h *fakeHost) syncInfo() syncInfo {
-	if h.signedIn == "" {
-		return syncInfo{}
-	}
-	si := h.sync
-	si.name = h.signedIn
-	return si
-}
-func (h *fakeHost) syncPicture() *ui.Bitmap { return nil }
-func (h *fakeHost) syncConflictResolved()   { h.resolved++ }
-func (h *fakeHost) ai() *mon.Client         { return h.aiClient }
-func (h *fakeHost) aiSignedOut()            { h.aiSignOuts++ }
-func (h *fakeHost) update() string          { return h.newVersion }
-func (h *fakeHost) installUpdate()          { h.updateOpens++ }
-func (h *fakeHost) stepProject(int)         {}
-func (h *fakeHost) showProject(int)         {}
-func (h *fakeHost) closeProject()           {}
-func (h *fakeHost) projectTabsChanged()     {}
-func (h *fakeHost) nativeDrags() bool       { return false }
+func (h *fakeHost) update() string            { return h.newVersion }
+func (h *fakeHost) installUpdate()            { h.updateOpens++ }
+func (h *fakeHost) stepProject(int)           {}
+func (h *fakeHost) showProject(int)           {}
+func (h *fakeHost) closeProject()             {}
+func (h *fakeHost) projectTabsChanged()       {}
+func (h *fakeHost) nativeDrags() bool         { return false }
 
 // workspaceFixture makes a folder of a few files.
 func workspaceFixture(t testing.TB) string {

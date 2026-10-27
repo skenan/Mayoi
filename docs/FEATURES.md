@@ -144,11 +144,6 @@ tree, with a count of them. Files are grouped as merge changes, staged changes, 
 - Write a message and press ⌘↵ or the commit button, which says what it will do: **Commit**, **Commit All** when nothing
   is staged (Mayoi asks before staging everything), or **Amend Commit**. Changed files save first. Past 50 characters
   the summary line shows its length, in a warning color past 72.
-- Signed in to your [Mon](https://mon.sorrycc.dev) account, the ✨ button at the corner of the message box has AI write
-  the message from the staged changes, or from every change when nothing is staged, in the style of the branch's last
-  commits. The message streams into the box; click the button again to stop. Text already in the box goes along as
-  notes to follow. **Git: Write Commit Message with AI** in the command palette does the same. It uses Mon's AI gateway
-  and your account's daily limit; the `aiModel` setting picks another of its models.
 - The arrow beside the commit button has **Commit & Push**, **Amend Last Commit** (which fills in the last message) and
   **Undo Last Commit**, which takes the commit back but keeps its changes staged and its message in the box.
 - The **⋯** menu by the title has the commit commands, stage, unstage and discard all, fetch, pull and push, Refresh,
@@ -654,19 +649,6 @@ Some commands are only in the command palette: **Copy Path of Active File**, **C
 **Reveal Active File in Finder** (File Explorer on Windows), **Indent Using Tabs** and **Indent Using 2, 4 or 8 Spaces**. **Selection → Sort Lines
 Ascending**, **Sort Lines Descending** and **Transform to Camel Case** work on the lines selected, or every line, and on
 the words selected, or the caret's.
-
-## Settings sync
-
-**Mayoi → Sign In…** (**Help** on Linux and Windows, and the command palette's **Account** commands)
-signs in to your [Mon](https://mon.sorrycc.dev) account, with GitHub or Google. Mayoi shows a short code and opens the
-browser to approve it. Your preferences and `keybindings.json` then sync between your machines: a change saves to the
-account a couple of seconds after you make it, and Mayoi gets the account's changes as it starts and as it comes to the
-front. Changes made on two machines merge setting by setting.
-
-A cloud at the right of the status bar shows whether the last sync went through, and opens the account's panel: when
-the machine last synced, **Sync Now**, switches to keep the settings or the keyboard shortcuts on this machine, and
-**Sign Out**. A sync that couldn't reach the account tries again by itself, and `keybindings.json` changed on two
-machines opens side by side to merge. See [SETTINGS.md](SETTINGS.md#settings-sync).
 
 ## Updates
 

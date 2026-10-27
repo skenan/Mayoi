@@ -176,7 +176,6 @@ func (a *app) view(c *ui.Context) {
 	a.conflictsView(c)
 	a.promptView(c)
 	a.confirmView(c)
-	a.signinView(c)
 	if !a.dialogBuilt {
 		a.dialog = ""
 	}
@@ -993,9 +992,6 @@ func (a *app) statusFit(c *ui.Context, width float32) statusVisibility {
 		add(&v.indent, measure(d.indent.String(), false))
 		add(&v.language, measure(highlight.DisplayName(d.hl.Lexer()), false))
 	}
-	if a.host.account() != "" {
-		used += syncStatusW
-	}
 	if version := a.host.update(); version != "" {
 		used += measure(version, true)
 	}
@@ -1203,9 +1199,7 @@ func (a *app) statusBar(c *ui.Context) {
 		}
 		a.reviewStatus(c, text)
 		ui.Spacer(c)
-		// Settings sync is last, at the right, whatever shows before it,
-		// and a new version of Mayoi before it.
-		defer a.syncStatus(c)
+		// A new version of Mayoi is last, at the right.
 		if v := a.host.update(); v != "" {
 			defer item("update", v, locales.UpdateAvailable(v), iconUpdate, a.host.installUpdate)
 		}
@@ -1386,9 +1380,6 @@ func (a *app) welcome(c *ui.Context) {
 					a.welcomeAction(c, iconTerminal, locales.CmdViewTerminal(), a.keyHint("view.terminal"), a.togglePanel)
 					a.welcomeAction(c, iconSidebar, locales.CmdViewSidebar(), a.keyHint("view.sidebar"), a.toggleSidebar)
 					a.welcomeAction(c, iconSparkles, locales.CmdViewSelectTheme(), a.keyHint("view.selectTheme"), a.openThemePicker)
-					if a.host.account() == "" && a.settings.Path() != "" {
-						a.welcomeAction(c, iconCloud, locales.CmdAccountSignIn(), "", func() { a.host.signIn() })
-					}
 				})
 				var recent []string
 				if a.root == "" {

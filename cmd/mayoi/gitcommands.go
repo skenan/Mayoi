@@ -68,7 +68,6 @@ func (a *app) askPanelRemote(remote *git.Remote, push bool) {
 	a.repository().askPanelRemote(remote, push)
 }
 func (a *app) askPanelNewBranch()                   { a.repository().askPanelNewBranch() }
-func (a *app) writeMessage()                        { a.repository().writeMessage() }
 func (a *app) openBranchPicker()                    { a.repository().openBranchPicker() }
 func (a *app) branchChoices() []branchChoice        { return a.repository().branchChoices() }
 func (a *app) commitPatch(cm git.Commit, save bool) { a.repository().commitPatch(cm, save) }

@@ -17,7 +17,6 @@ import (
 	"mayoi/internal/git"
 	"mayoi/internal/highlight"
 	"mayoi/internal/keymap"
-	"mayoi/internal/mon"
 	"mayoi/internal/remote"
 	"mayoi/internal/settings"
 	"mayoi/internal/workspace"
@@ -52,9 +51,6 @@ type host interface {
 	// setTheme gives the windows a theme and an appearance of the
 	// settings.
 	setTheme(theme, appearance string)
-	// setLocale shows the windows in the language of tag, or of the
-	// system for "".
-	setLocale(tag string)
 	// showFolder brings the other window that has dir open to the front,
 	// and reports whether there is one.
 	showFolder(dir string) bool
@@ -76,24 +72,6 @@ type host interface {
 	// path, and take it away, saying how it went.
 	installCLI()
 	uninstallCLI()
-	// account is the name of the person settings sync syncs for, "" when
-	// signed out. signIn signs in, showing the code to approve in the
-	// window, signOut signs out, and syncNow syncs at once.
-	account() string
-	signIn()
-	signOut()
-	syncNow()
-	// syncInfo is how settings sync is, and syncPicture the person's
-	// picture, nil until it is fetched. syncConflictResolved says the
-	// account's keybindings.json kept beside this machine's may be gone.
-	syncInfo() syncInfo
-	syncPicture() *ui.Bitmap
-	syncConflictResolved()
-	// ai is a client of Mon's AI gateway, as the account signed in, nil
-	// while signed out. aiSignedOut says Mon refused its token: the
-	// account was signed out elsewhere.
-	ai() *mon.Client
-	aiSignedOut()
 	// update is the new version of Mayoi a check found, "" when there is
 	// none, and installUpdate opens the update window to install it.
 	update() string
@@ -299,11 +277,6 @@ type app struct {
 	inFiles    searchState // search in the files, of the sidebar
 	prompt     *prompt
 	confirm    *confirm
-	signin     *signin
-	// syncOpen shows the account's panel above its part of the status
-	// bar, and tickAt is when a countdown shown repaints next.
-	syncOpen bool
-	tickAt   time.Time
 	// dialog is the dialog shown, which came in as it showed, and
 	// dialogBuilt says a build of the view built one.
 	dialog      string

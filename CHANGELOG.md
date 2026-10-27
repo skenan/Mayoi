@@ -7,6 +7,10 @@ needs a `## <version>` section here, or its build fails.
 
 - **View → Split Terminal** opens a terminal beside the current one in the panel; drag the edge between them to resize.
 - Each split terminal has its own chip in the panel, and clicking one focuses it.
+- Mayoi is English only: Simplified Chinese, Japanese and **View → Language** are gone.
+- Signing in to a Mon account and settings sync are removed, along with the status bar's cloud.
+- **Git: Write Commit Message with AI** and the ✨ button in the commit box are removed.
+- Mayoi no longer offers to send crash reports; crash logs stay in the `crashes` folder.
 
 ## 0.13.0
 

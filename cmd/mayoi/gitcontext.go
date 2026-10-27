@@ -113,9 +113,6 @@ func (a *app) repositoryForPath(path string) *gitContext {
 
 func (a *app) resetRepositories() {
 	for _, ctx := range a.repositories.contexts {
-		if ctx.git.writing != nil {
-			ctx.git.writing.cancel()
-		}
 		if ctx.git != &a.git {
 			ctx.git.repo = nil
 		}
@@ -211,9 +208,6 @@ func (a *app) discoverRepositories() {
 			}
 			for _, ctx := range old {
 				if !slices.Contains(next, ctx) {
-					if ctx.git.writing != nil {
-						ctx.git.writing.cancel()
-					}
 					ctx.git.repo = nil
 				}
 			}

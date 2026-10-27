@@ -175,5 +175,5 @@ func (a *gitContext) changesContext() *gitContext {
 }
 
 func (a *gitContext) hasCommitControls() bool {
-	return a.changeCount() > 0 || a.git.amend || a.git.writing != nil || a.git.status != nil && a.git.status.Op != ""
+	return a.changeCount() > 0 || a.git.amend || a.git.status != nil && a.git.status.Op != ""
 }

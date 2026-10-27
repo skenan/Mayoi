@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/egoist/mygo"
-	"github.com/egoist/mygo/i18n"
 	"github.com/egoist/mygo/plugins/updater"
 	"github.com/egoist/mygo/plugins/updater/native"
 	"github.com/egoist/mygo/ui"
@@ -62,9 +61,6 @@ type mayoi struct {
 	// again only when it changes.
 	menuKey      string
 	menuRevision uint64 // rejects deferred updates superseded by a newer menu
-	// cloud syncs the settings with the person's account, nil without a
-	// settings file.
-	cloud *cloud
 	// icons is the folder of the icons chosen for projects on the rail,
 	// beside the settings, "" without a settings file.
 	icons string
@@ -179,13 +175,6 @@ func (h *desktop) setTheme(theme, appearance string) {
 		w.a.invalidate()
 	}
 	// The appearances are greyed out under The Matrix.
-	h.m.refreshMenu()
-}
-
-func (h *desktop) setLocale(tag string) {
-	mygo.App.SetLocale(tag)
-	// The language may show as it did, as English for the system's
-	// English: the menu's choice changes all the same.
 	h.m.refreshMenu()
 }
 
@@ -354,8 +343,6 @@ func main() {
 	})
 	mygo.App.OnQuit(func() {
 		m.s.Flush()
-		// A change made a moment ago, which would sync at the next launch.
-		m.cloud.flush()
 		// The ssh masters, which would outlive the app.
 		remote.Shutdown()
 	})
@@ -365,19 +352,13 @@ func main() {
 			m.icons = filepath.Join(filepath.Dir(p), "project-icons")
 		}
 		mygo.Theme.SetSource(themeSource(m.s.Theme, m.s.Appearance))
-		// The language of the settings, unless MYGO_LOCALE (mygo dev -lang)
-		// chose one for the run.
-		if os.Getenv("MYGO_LOCALE") == "" {
-			applyLocale(m.s.Locale)
-		}
-		mygo.App.OnLocaleChanged(func(string) { m.localeChanged() })
-		if stop, err := m.s.Watch(func(p settings.Prefs) { mygo.RunOnMain(func() { m.reload(p); m.cloud.changed() }) }); err == nil {
+		if stop, err := m.s.Watch(func(p settings.Prefs) { mygo.RunOnMain(func() { m.reload(p) }) }); err == nil {
 			mygo.App.OnQuit(stop)
 		}
 		keysPath := keymap.Path(m.s.Path())
 		keys, keysErr := keymap.Load(keysPath)
 		m.keys = keys
-		if stop, err := keymap.Watch(keysPath, func(km *keymap.Map, err error) { mygo.RunOnMain(func() { m.reloadKeys(km, err); m.cloud.changed() }) }); err == nil {
+		if stop, err := keymap.Watch(keysPath, func(km *keymap.Map, err error) { mygo.RunOnMain(func() { m.reloadKeys(km, err) }) }); err == nil {
 			mygo.App.OnQuit(stop)
 		}
 		wd, _ := os.Getwd()
@@ -389,7 +370,6 @@ func main() {
 			<-shellPathReady
 			refreshCLI()
 		}()
-		m.startCloud()
 		m.startUpdates()
 		if len(m.wins) == 0 {
 			return
@@ -397,9 +377,6 @@ func main() {
 		first := m.wins[0]
 		first.a.keysFailed(keys, keysErr)
 		m.setMenu(first.a)
-		if os.Getenv("MAYOI_SNAPSHOT") == "" {
-			m.offerCrashes(first)
-		}
 		if out := os.Getenv("MAYOI_SNAPSHOT"); out != "" {
 			// For checking the real window: capture it once it settles, and
 			// quit.
@@ -624,9 +601,6 @@ func (m *mayoi) reload(p settings.Prefs) {
 	if p.ProjectTabs != old.ProjectTabs {
 		m.projectTabsChanged()
 	}
-	if p.Locale != old.Locale {
-		applyLocale(p.Locale)
-	}
 	for _, w := range m.wins {
 		if p.AutoSave && !old.AutoSave {
 			w.a.autoSaveAll()
@@ -652,27 +626,6 @@ func (m *mayoi) reloadKeys(km *keymap.Map, err error) {
 	}
 	front := m.wins[0]
 	front.do(func() { front.a.keysFailed(km, err) })
-}
-
-// applyLocale shows the app in the language of tag, or of the system's
-// languages for "" or a tag that names none.
-func applyLocale(tag string) {
-	if i18n.Normalize(tag) == "" {
-		tag = ""
-	}
-	mygo.App.SetLocale(tag)
-}
-
-// localeChanged says anew what the windows made once in the language they
-// showed: the menus and the command palette. The windows draw anew
-// themselves.
-func (m *mayoi) localeChanged() {
-	for _, w := range m.wins {
-		w.a.palette, w.a.quick.stale = nil, true
-		w.a.invalidate()
-	}
-	m.menuKey = ""
-	m.refreshMenu()
 }
 
 // refreshMenu builds the menus anew on the window in front, whose folder

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"reflect"
 	"slices"
 	"strings"
 	"sync"
@@ -35,9 +34,6 @@ type Settings struct {
 	// stateWritten what they last wrote to the state's.
 	written      []byte
 	stateWritten []byte
-	// prefsWritten is called, on a goroutine of its own, each time the
-	// settings write a change of the preferences to their file.
-	prefsWritten func()
 	// seq counts the encodings of the settings, which wmu writes in turn:
 	// wrote is the seq of the last written, before which none lands.
 	seq   uint64
@@ -191,20 +187,6 @@ type Prefs struct {
 	// ProjectTabStyle is a project's own label, color and icon on the rail
 	// of project tabs, by its folder.
 	ProjectTabStyle map[string]TabStyle `json:"projectTabStyle,omitempty"`
-	// Locale is the language Mayoi shows, as "en", "zh-Hans" or "ja", or ""
-	// for the one the system's languages prefer.
-	Locale string `json:"locale,omitempty"`
-	// AIModel is the model of Mon's AI gateway that writes commit
-	// messages, "" for Mayoi's choice.
-	AIModel string `json:"aiModel,omitempty"`
-	// CrashReports is what Mayoi does with the report of a crash at the
-	// next launch: "" asks whether to send it to Mon, "always" sends it
-	// and "never" doesn't.
-	CrashReports string `json:"crashReports,omitempty"`
-	// SyncIgnored is what settings sync leaves on this machine: keys of
-	// the preferences, "settings.json" for all of them, and
-	// "keybindings.json" for the keyboard shortcuts.
-	SyncIgnored []string `json:"syncIgnored,omitempty"`
 }
 
 // TabStyle is a project's own look on the rail: Label, up to two
@@ -233,38 +215,6 @@ func (s *Settings) SetTabStyle(folder string, st TabStyle) {
 		s.ProjectTabStyle[folder] = st
 	}
 	s.Changed()
-}
-
-// SyncIgnored's names of all the preferences, and of the keyboard
-// shortcuts.
-const (
-	SyncSettings    = "settings.json"
-	SyncKeybindings = "keybindings.json"
-)
-
-// SyncKept returns the keys of the preferences settings sync leaves on
-// this machine, and whether it leaves the keyboard shortcuts.
-func (p Prefs) SyncKept() (keys []string, keybindings bool) {
-	all := slices.Contains(p.SyncIgnored, SyncSettings)
-	for _, k := range PrefKeys {
-		if all && !slices.Contains(unsynced, k) || slices.Contains(p.SyncIgnored, k) {
-			keys = append(keys, k)
-		}
-	}
-	return keys, slices.Contains(p.SyncIgnored, SyncKeybindings)
-}
-
-// SyncIgnoring returns SyncIgnored with name, a key or SyncSettings or
-// SyncKeybindings, in it or out of it.
-func (p Prefs) SyncIgnoring(name string, ignore bool) []string {
-	out := slices.DeleteFunc(slices.Clone(p.SyncIgnored), func(k string) bool { return k == name })
-	if ignore {
-		out = append(out, name)
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
 }
 
 // Window is a window as the settings keep it: its folder, and its
@@ -704,7 +654,6 @@ func (s *Settings) write(seq uint64, prefs, state []byte) {
 	s.mu.Lock()
 	samePrefs, sameState := bytes.Equal(prefs, s.written), bytes.Equal(state, s.stateWritten)
 	s.written, s.stateWritten = prefs, state
-	fn := s.prefsWritten
 	s.mu.Unlock()
 	if !samePrefs {
 		WriteFile(s.path, prefs)
@@ -713,11 +662,6 @@ func (s *Settings) write(seq uint64, prefs, state []byte) {
 		WriteFile(s.statePath, state)
 	}
 	s.wmu.Unlock()
-	// Outside wmu, as fn may wait for the main thread, which may wait to
-	// write.
-	if !samePrefs && fn != nil {
-		fn()
-	}
 }
 
 // WriteFile writes data to path through a file of its own beside it, so
@@ -888,94 +832,4 @@ func (s *Settings) read() ([]byte, Prefs, bool) {
 	}
 	f.normalize()
 	return data, f.Prefs, true
-}
-
-// OnPrefsWritten calls fn, on a goroutine of its own, each time the
-// settings write a change of the preferences to their file, as a menu
-// changing one, though not as the person saves the file: Watch tells of
-// that.
-func (s *Settings) OnPrefsWritten(fn func()) {
-	s.mu.Lock()
-	s.prefsWritten = fn
-	s.mu.Unlock()
-}
-
-// unsynced are the preferences that stay on each machine: what the
-// windows remember of source control's panels rather than what a person
-// chooses, what the person keeps on the machine, and the looks of the
-// projects on the rail, by folders of this machine.
-var unsynced = []string{"scmRepositoryOpen", "scmRemotes", "syncIgnored", "projectTabStyle"}
-
-// PrefKeys are the keys of the preferences in the settings' file.
-var PrefKeys = func() []string {
-	var keys []string
-	t := reflect.TypeFor[Prefs]()
-	for f := range t.Fields() {
-		name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
-		if name != "" && name != "-" {
-			keys = append(keys, name)
-		}
-	}
-	return keys
-}()
-
-// Synced returns the preferences that sync between machines, by their
-// keys in the settings' file. Keys at their zero value with omitempty are
-// left out, as the file leaves them out.
-func (p Prefs) Synced() map[string]json.RawMessage {
-	data, _ := json.Marshal(p)
-	var m map[string]json.RawMessage
-	json.Unmarshal(data, &m)
-	for _, k := range unsynced {
-		delete(m, k)
-	}
-	return m
-}
-
-// WithSynced returns the preferences of synced, by their keys in the
-// settings' file, the defaults where it has none, and p's of those that
-// do not sync or that it leaves on this machine.
-func (p Prefs) WithSynced(synced map[string]json.RawMessage) (Prefs, error) {
-	keep, _ := p.SyncKept()
-	keep = append(keep, unsynced...)
-	mine, _ := json.Marshal(p)
-	var own map[string]json.RawMessage
-	json.Unmarshal(mine, &own)
-	m := make(map[string]json.RawMessage, len(synced)+len(keep))
-	for k, v := range synced {
-		if !slices.Contains(keep, k) {
-			m[k] = v
-		}
-	}
-	for _, k := range keep {
-		if v, ok := own[k]; ok {
-			m[k] = v
-		}
-	}
-	f := Default()
-	data, err := json.Marshal(m)
-	if err != nil {
-		return p, err
-	}
-	if err := json.Unmarshal(data, &f.Prefs); err != nil {
-		return p, err
-	}
-	f.normalize()
-	return f.Prefs, nil
-}
-
-// IsDefault reports whether the preferences that sync are those of a
-// first launch.
-func (p Prefs) IsDefault() bool {
-	d := Default().Prefs.Synced()
-	m := p.Synced()
-	if len(d) != len(m) {
-		return false
-	}
-	for k, v := range m {
-		if !bytes.Equal(d[k], v) {
-			return false
-		}
-	}
-	return true
 }
