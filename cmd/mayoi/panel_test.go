@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"strings"
 	"testing"
 	"time"
 
@@ -243,5 +244,35 @@ func TestTerminalsStayWithTheirFolder(t *testing.T) {
 	case <-mine[0].term.Done():
 	case <-time.After(5 * time.Second):
 		t.Error("closing the window left a parked terminal running")
+	}
+}
+
+// ⌘K in a terminal clears it, as in VS Code, rather than opening the
+// editor's replace.
+func TestCmdKClearsATerminal(t *testing.T) {
+	featShell(t)
+	hs := newHarness(t, false)
+	a, tt := hs.a, hs.tt
+	a.keys = withDefaultKeys(nil)
+	t.Cleanup(a.closeTerminals)
+	a.togglePanel()
+	hs.settle()
+	s := a.panelTerm
+	hs.until("the prompt", func() bool { return strings.Contains(s.term.Text(), "❯") })
+	s.term.Send([]byte("echo cleared-away\r"))
+	hs.until("the output", func() bool { return strings.Count(s.term.Text(), "cleared-away") == 2 })
+	tt.Key(ui.Super, ui.KeyK)
+	hs.settle()
+	hs.until("the terminal cleared", func() bool { return !strings.Contains(s.term.Text(), "cleared-away") })
+	if a.find.replacing {
+		t.Error("⌘K in a terminal opened replace")
+	}
+	// In the editor, it replaces.
+	a.openFile(hs.path("main.go"), true)
+	hs.settle()
+	tt.Key(ui.Super, ui.KeyK)
+	hs.settle()
+	if !a.find.replacing {
+		t.Error("⌘K in the editor did not open replace")
 	}
 }

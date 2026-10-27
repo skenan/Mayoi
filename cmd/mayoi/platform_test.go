@@ -108,7 +108,7 @@ func TestWindowsKeyHints(t *testing.T) {
 	for id, want := range map[string]string{
 		"go.commands": "Ctrl+Shift+P", "edit.findNext": "F3", "edit.findPrev": "Shift+F3",
 		"edit.replace": "Ctrl+H", "go.line": "Ctrl+G", "view.scm": "Ctrl+Shift+G", "file.saveAll": "",
-		"view.terminal": "Ctrl+`", "edit.redo": "Ctrl+Shift+Z",
+		"view.terminal": "Ctrl+J", "edit.redo": "Ctrl+Shift+Z",
 	} {
 		if got := a.keyHint(id); got != want {
 			t.Errorf("%s: %q, want %q", id, got, want)
@@ -142,10 +142,10 @@ func TestWindowsMenuKeys(t *testing.T) {
 	if a.window.SidebarClosed == closed {
 		t.Error("Ctrl+B did not toggle the sidebar")
 	}
-	tt.Key(ui.Ctrl, ui.KeyP)
+	tt.Key(ui.Ctrl, ui.KeyE)
 	hs.settle()
 	if !a.quick.open {
-		t.Error("Ctrl+P did not open quick open")
+		t.Error("Ctrl+E did not open quick open")
 	}
 	tt.Key(0, ui.KeyEscape)
 	hs.settle()
@@ -178,7 +178,7 @@ func TestShellSkip(t *testing.T) {
 		id   string
 		ok   bool
 	}{
-		{ui.Ctrl, ui.KeyP, "go.quickOpen", true},
+		{ui.Ctrl, ui.KeyE, "go.quickOpen", true},
 		{ui.Ctrl | ui.Shift, ui.KeyP, "go.commands", true},
 		{ui.Ctrl | ui.Shift, ui.KeyF, "edit.findInFiles", true},
 		{0, ui.KeyF3, "edit.findNext", true},

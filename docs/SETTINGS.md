@@ -113,7 +113,7 @@ differ in width lines them up only roughly.
   of the two.
 - **`terminalLocation`** is where a new terminal opens: `""` in the panel, or `"editor"` in a tab of the editor area,
   in the column files open in, as **New Terminal in Editor Area** does. It applies to New Terminal (⌃⇧`) and the
-  Explorer's **Open in Terminal**. Toggle Terminal (⌃`), the title bar's terminal button and the panel's **+** still
+  Explorer's **Open in Terminal**. Toggle Terminal (⌘J), the title bar's terminal button and the panel's **+** still
   open the panel.
 - **`projectTabs`** keeps every folder open in one window, as project tabs on a rail on its left, rather than a
   window for each. Changing it gathers the windows into one, or parts them, at once.
@@ -229,7 +229,7 @@ The shortcuts are macOS's with Ctrl for ⌘, and the hints show them so, but for
 | Command                                  | macOS    | Windows and Linux |
 | ---------------------------------------- | -------- | ----------------- |
 | Find Next, Find Previous                 | ⌘G, ⇧⌘G  | F3, Shift+F3      |
-| Replace                                  | ⌥⌘F      | Ctrl+H            |
+| Replace                                  | ⌘K       | Ctrl+H            |
 | Show the tab 1 to 8, the last            | ⌘1 to ⌘9 | Alt+1 to Alt+9    |
 | Save All, Open Folder in New Window      | ⌥⌘S, ⌥⌘O | none              |
 | Focus Next Column, Focus Previous Column | ⌥⌘→, ⌥⌘← | none              |

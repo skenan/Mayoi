@@ -107,6 +107,13 @@ func (a *app) commandCaps(cmd command) []string {
 	if accel == "" && cmd.accel == "" {
 		accel = platformAccel(cmd.id, viewKeys[cmd.id])
 	}
+	if accel == "" {
+		if keys := a.keys.LastWhen(commandNames(cmd.id)...); len(keys) == 1 {
+			return accelCaps(keys[0].Accel(), macKeys())
+		} else if keys != nil {
+			return chordCaps(keys)
+		}
+	}
 	return accelCaps(accel, macKeys())
 }
 

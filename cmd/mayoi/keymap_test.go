@@ -9,6 +9,7 @@ import (
 	"github.com/egoist/mygo/ui"
 
 	"mayoi/internal/keymap"
+	"mayoi/internal/settings"
 )
 
 const testKeys = `// as Cursor's, with ctrl+. for the prefix
@@ -255,5 +256,50 @@ func TestKeymapChordTypesNothingAndLetsGo(t *testing.T) {
 	hs.settle()
 	if !strings.HasPrefix(d.buf.String(), "q") || a.chording() {
 		t.Errorf("typing after the chord: %q, chording %v", d.buf.String(), a.chording())
+	}
+}
+
+// Mayoi's own shortcuts come before keybindings.json's: the hints show
+// them, and the file's take their keys.
+func TestDefaultKeys(t *testing.T) {
+	a := newApp(&fakeHost{}, settings.Default(), settings.Default().NewWindow())
+	t.Cleanup(a.shutdown)
+	a.keys = withDefaultKeys(nil)
+	for id, want := range map[string]string{"view.terminal": "⌘J", "go.quickOpen": "⌘E", "edit.replace": "⌘K", "sel.deleteLine": "⌘D", "edit.findInFiles": "⇧⌘F"} {
+		if got := a.keyHint(id); got != want {
+			t.Errorf("%s: %q, want %q", id, got, want)
+		}
+	}
+	ctrlH := []keymap.Stroke{{Mods: ui.Ctrl, Key: ui.KeyH}}
+	if b, _ := a.keys.Lookup(ctrlH, func(string) bool { return false }); b == nil || b.Command != "workbench.action.findInFiles" {
+		t.Errorf("ctrl+h runs %v, want find in files", b)
+	}
+	if b, _ := a.keys.Lookup(ctrlH, func(name string) bool { return name == "terminalFocus" }); b != nil {
+		t.Errorf("ctrl+h in a terminal runs %v, want the shell to have it", b)
+	}
+	// ⌘K replaces, but a terminal clears itself with it; ⌘D deletes the
+	// editor's line, and nothing elsewhere.
+	cmdK, cmdD := []keymap.Stroke{{Mods: ui.Super, Key: ui.KeyK}}, []keymap.Stroke{{Mods: ui.Super, Key: ui.KeyD}}
+	inEditor := func(name string) bool { return name == "editorTextFocus" }
+	inTerminal := func(name string) bool { return name == "terminalFocus" }
+	if b, _ := a.keys.Lookup(cmdK, inEditor); b == nil || b.Command != "editor.action.startFindReplaceAction" {
+		t.Errorf("cmd+k in the editor runs %v, want replace", b)
+	}
+	if b, _ := a.keys.Lookup(cmdK, inTerminal); b != nil {
+		t.Errorf("cmd+k in a terminal runs %v, want the terminal to clear", b)
+	}
+	if b, _ := a.keys.Lookup(cmdD, inEditor); b == nil || b.Command != "editor.action.deleteLines" {
+		t.Errorf("cmd+d in the editor runs %v, want delete line", b)
+	}
+	if b, _ := a.keys.Lookup(cmdD, inTerminal); b != nil {
+		t.Errorf("cmd+d in a terminal runs %v, want nothing", b)
+	}
+	user, err := keymap.Parse([]byte(`[{ "key": "ctrl+h", "command": "workbench.action.replaceInFiles" }]`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := withDefaultKeys(user).Lookup(ctrlH, func(string) bool { return false })
+	if b == nil || b.Command != "workbench.action.replaceInFiles" {
+		t.Errorf("ctrl+h runs %v, want the file's", b)
 	}
 }

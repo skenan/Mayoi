@@ -397,7 +397,8 @@ out of sight, and shows them again as it comes back; the folder opened starts it
 **View → New Terminals in Editor Area**, `terminalLocation` in `settings.json`, has New Terminal
 and the Explorer's **Open in Terminal** open a tab of the editor area rather than the panel; Toggle Terminal and the
 panel's **+** still use the panel. Terminal colors follow the theme.
-Files dropped on a terminal type their paths, quoted for the shell. ⌘V with only an image on the clipboard sends an empty
+Files dropped on a terminal type their paths, quoted for the shell. Shift+Enter sends Escape and Return, which Claude
+Code takes as a new line. ⌘V with only an image on the clipboard sends an empty
 bracketed paste, as VS Code's terminal does, so that Claude Code pastes the screenshot. Selecting text copies it, as
 in Ghostty and iTerm2: a drag, a double click for a word, a triple click for a line, Shift with a drag in a program
 that takes the mouse, or Select All. `terminalCopyOnSelect` turns it off.
@@ -415,7 +416,7 @@ Ctrl+Shift shortcut but Ctrl+Shift+C and Ctrl+Shift+V, the terminal's copy and p
 
 ## Quick open
 
-⌘P, or the search box in the title bar, opens a fuzzy file search with recent files first. In a Git work tree it lists
+⌘E, or the search box in the title bar, opens a fuzzy file search with recent files first. In a Git work tree it lists
 the files Git tracks, so build output stays out.
 
 - Type `:42` to go to line 42.
@@ -425,12 +426,12 @@ the files Git tracks, so build output stays out.
 
 ## Find and replace
 
-⌘F finds and ⌥⌘F replaces, with options for match case, whole word and regular expressions (`$1` refers to a group). In
+⌘F finds and ⌘K replaces, with options for match case, whole word and regular expressions (`$1` refers to a group). In
 large files, matches are found in the background as you type.
 
 ## Search
 
-The button beside **EXPLORER** with a magnifying glass, ⇧⌘F or **Edit → Find in Files** searches every file of the
+The button beside **EXPLORER** with a magnifying glass, ⇧⌘F, ⌃H or **Edit → Find in Files** searches every file of the
 folder, as quick open lists them, with options for match case, whole word and regular expressions. The selection, when
 it is on one line, becomes the query. Results come in as they are found, a line for each match under a header for its
 file, with its line number; click a header to fold it, or **Collapse All** in the title. Click a match, or move to it, and

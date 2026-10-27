@@ -178,6 +178,30 @@ func (a *app) whenContext(where keyPlace) func(string) bool {
 	}
 }
 
+// defaultKeys are Mayoi's own shortcuts that a menu's accelerator can't
+// be: a second key of a command, or one that applies only somewhere, as
+// ⌘K, which a terminal clears itself with. keybindings.json's come after
+// them, and win.
+const defaultKeys = `[
+	{ "key": "cmd+k", "command": "editor.action.startFindReplaceAction", "when": "!terminalFocus" },
+	{ "key": "cmd+d", "command": "editor.action.deleteLines", "when": "editorTextFocus && !editorReadonly" },
+	{ "key": "ctrl+h", "command": "workbench.action.findInFiles", "when": "!terminalFocus" },
+	{ "key": "shift+enter", "command": "workbench.action.terminal.sendSequence", "args": { "text": "\u001b\r" }, "when": "terminalFocus" },
+]`
+
+// withDefaultKeys is the shortcuts of keybindings.json after Mayoi's own.
+func withDefaultKeys(km *keymap.Map) *keymap.Map {
+	d, err := keymap.Parse([]byte(defaultKeys))
+	if err != nil {
+		panic(err)
+	}
+	if km != nil {
+		d.Bindings = append(d.Bindings, km.Bindings...)
+		d.Errors = km.Errors
+	}
+	return d
+}
+
 // vscodeCommands are the commands of VS Code by their names, as Mayoi
 // has them.
 var vscodeCommands = map[string]string{

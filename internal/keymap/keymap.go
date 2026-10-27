@@ -191,6 +191,22 @@ func (m *Map) Last(names ...string) []Stroke {
 	return nil
 }
 
+// LastWhen returns the keys of the last binding of any of the commands
+// names that applies only somewhere, as the shortcut to show for one
+// that has no other: nil for none.
+func (m *Map) LastWhen(names ...string) []Stroke {
+	if m == nil {
+		return nil
+	}
+	for i := len(m.Bindings) - 1; i >= 0; i-- {
+		b := m.Bindings[i]
+		if b.When != nil && len(b.Args) == 0 && slices.Contains(names, b.Command) {
+			return b.Keys
+		}
+	}
+	return nil
+}
+
 // StripJSONC drops the comments of JSON, and the commas before a closing
 // bracket or brace.
 func StripJSONC(data []byte) []byte {

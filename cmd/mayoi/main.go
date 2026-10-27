@@ -357,6 +357,7 @@ func main() {
 		}
 		keysPath := keymap.Path(m.s.Path())
 		keys, keysErr := keymap.Load(keysPath)
+		keys = withDefaultKeys(keys)
 		m.keys = keys
 		if stop, err := keymap.Watch(keysPath, func(km *keymap.Map, err error) { mygo.RunOnMain(func() { m.reloadKeys(km, err) }) }); err == nil {
 			mygo.App.OnQuit(stop)
@@ -617,6 +618,7 @@ func (m *mayoi) reloadKeys(km *keymap.Map, err error) {
 		return
 	}
 	if err == nil {
+		km = withDefaultKeys(km)
 		m.keys = km
 		for _, w := range m.wins {
 			w.a.keys, w.a.chord, w.a.palette, w.a.hints = km, nil, nil, nil

@@ -106,20 +106,20 @@ To open folders from a shell, choose **File → Install 'mayoi' Command** (on Li
 
 | Shortcut | Action |
 |---|---|
-| ⌘P / ⇧⌘O / ⌃G | Quick open / go to symbol / go to line |
-| ⌘F / ⌥⌘F / ⌘G | Find / replace / next match |
-| ⇧⌘F / ⇧⌘H | Find in files / replace in files |
+| ⌘E / ⇧⌘O / ⌃G | Quick open / go to symbol / go to line |
+| ⌘F / ⌘K / ⌘G | Find / replace / next match |
+| ⇧⌘F or ⌃H / ⇧⌘H | Find in files / replace in files |
 | ⌘S / ⇧⌘S / ⌥⌘S | Save / save as / save all |
 | ⌘O / ⌥⌘O / ⌃R | Open folder / open folder in a new window / open recent |
 | ⌘N / ⌘W / ⌘1…9 / ⌃Tab | New file / close tab / go to tab / next tab |
 | ⇧⌘] / ⇧⌘[ / ⌃⌘1…9 | Next / previous / go to project, with project tabs |
 | ⌘\\ / ⌥⌘→ / ⌥⌘← | Split right / next column / previous column |
-| ⌘B / ⌃\` / ⌃⇧\` | Toggle sidebar / toggle terminal panel / new terminal |
+| ⌘B / ⌘J / ⌃⇧\` | Toggle sidebar / toggle terminal panel / new terminal |
 | ⌘Z / ⇧⌘Z | Undo / redo |
 | Tab / ⇧Tab, ⌘] / ⌘[ | Indent / outdent |
 | ⌘/ | Toggle line comment |
 | ⌥↑ / ⌥↓, ⇧⌥↑ / ⇧⌥↓ | Move line / copy line |
-| ⇧⌘K / ⌘↵ / ⇧⌘↵ | Delete line / insert line below / insert line above |
+| ⌘D / ⌘↵ / ⇧⌘↵ | Delete line / insert line below / insert line above |
 | ⌘L / ⇧⌘\\ | Select line / go to bracket |
 | ⌘= / ⌘- / ⌘0 | Zoom the whole window in / out / reset |
 | ⇧⌘V | Toggle SVG preview |
