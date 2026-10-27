@@ -97,6 +97,7 @@ release for you in `~/.local`, with the `mayoi` command and an entry in the appl
 ```sh
 go run ./cmd/mayoi ~/some/project    # open a folder or a file
 go tool mygo build                   # build build/darwin-arm64/Mayoi.app and a .dmg
+scripts/install.sh                   # build, and replace /Applications/Mayoi.app, settings and all kept
 ```
 
 To open folders from a shell, choose **File → Install 'mayoi' Command** (on Linux the installer adds it), then run
