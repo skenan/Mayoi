@@ -5136,16 +5136,6 @@ func (msgs Messages) MenuTheme() string {
 	return Catalog.Format(msgs.locale, "menuTheme", nil)
 }
 
-// MenuUpdateTo says "Update to {version}…"
-// in the language the app shows.
-func MenuUpdateTo(version string) string { return In(i18n.Locale()).MenuUpdateTo(version) }
-
-// MenuUpdateTo says "Update to {version}…"
-// in the language of msgs.
-func (msgs Messages) MenuUpdateTo(version string) string {
-	return Catalog.Format(msgs.locale, "menuUpdateTo", map[string]any{"version": version})
-}
-
 // MenuView says "View"
 // in the language the app shows.
 func MenuView() string { return In(i18n.Locale()).MenuView() }
@@ -10292,16 +10282,6 @@ func (msgs Messages) UntrackedGoTo(trash string) string {
 	return Catalog.Format(msgs.locale, "untrackedGoTo", map[string]any{"trash": trash})
 }
 
-// UpdateAvailable says "Mayoi {version} is available"
-// in the language the app shows.
-func UpdateAvailable(version string) string { return In(i18n.Locale()).UpdateAvailable(version) }
-
-// UpdateAvailable says "Mayoi {version} is available"
-// in the language of msgs.
-func (msgs Messages) UpdateAvailable(version string) string {
-	return Catalog.Format(msgs.locale, "updateAvailable", map[string]any{"version": version})
-}
-
 // UploadButton says "Upload"
 // in the language the app shows.
 func UploadButton() string { return In(i18n.Locale()).UploadButton() }
@@ -10502,16 +10482,6 @@ func WelcomeTagline() string { return In(i18n.Locale()).WelcomeTagline() }
 // in the language of msgs.
 func (msgs Messages) WelcomeTagline() string {
 	return Catalog.Format(msgs.locale, "welcomeTagline", nil)
-}
-
-// WelcomeUpdate says "Update"
-// in the language the app shows.
-func WelcomeUpdate() string { return In(i18n.Locale()).WelcomeUpdate() }
-
-// WelcomeUpdate says "Update"
-// in the language of msgs.
-func (msgs Messages) WelcomeUpdate() string {
-	return Catalog.Format(msgs.locale, "welcomeUpdate", nil)
 }
 
 // WhitespaceExact says "Exact"

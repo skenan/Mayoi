@@ -1,7 +1,6 @@
 # Changelog
 
-The update window shows the section of the version it offers. Every release
-needs a `## <version>` section here, or its build fails.
+Every release needs a `## <version>` section here, or its build fails.
 
 ## Unreleased
 
@@ -20,6 +19,7 @@ needs a `## <version>` section here, or its build fails.
 - `F12` or ⌘-click on a name goes to its definition, in the file or the folder's files of its language.
 - When a name has several definitions, a box lists them to choose one.
 - `⌘[` goes back to where a jump left, and `⌘]` forward again; `Tab` and `⇧Tab` still indent.
+- Mayoi no longer checks for updates; build it yourself with `go tool mygo build`.
 - **View → Sticky Scroll** turns off the lines pinned to the top of the editor; `stickyScroll` in settings.
 
 ## 0.13.0

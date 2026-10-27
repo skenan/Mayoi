@@ -19,8 +19,6 @@ import (
 	"time"
 
 	"github.com/egoist/mygo"
-	"github.com/egoist/mygo/plugins/updater"
-	"github.com/egoist/mygo/plugins/updater/native"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -64,10 +62,6 @@ type mayoi struct {
 	// icons is the folder of the icons chosen for projects on the rail,
 	// beside the settings, "" without a settings file.
 	icons string
-	// updateFound is the newest version the last check found, "" when
-	// Mayoi is up to date, and update the one shown, "" when skipped.
-	updateFound string
-	update      string
 }
 
 func (h *desktop) openFolder(done func(string)) {
@@ -303,10 +297,6 @@ func main() {
 	} else {
 		close(shellPathReady)
 	}
-	// Release builds check for updates every hour (startUpdates) and show
-	// them in the window, whose click opens MyGo's update window; the
-	// updater never checks by itself. Development builds never check.
-	mygo.Use(native.New(updater.Options{DisableAutomaticChecks: true}))
 	m := &mayoi{}
 	mygo.App.OnSecondInstance(func(args []string, wd string) {
 		if paths := argPaths(args, wd); len(paths) > 0 {
@@ -371,7 +361,6 @@ func main() {
 			<-shellPathReady
 			refreshCLI()
 		}()
-		m.startUpdates()
 		if len(m.wins) == 0 {
 			return
 		}

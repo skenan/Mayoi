@@ -657,13 +657,3 @@ Some commands are only in the command palette: **Copy Path of Active File**, **C
 **Reveal Active File in Finder** (File Explorer on Windows), **Indent Using Tabs** and **Indent Using 2, 4 or 8 Spaces**. **Selection → Sort Lines
 Ascending**, **Sort Lines Descending** and **Transform to Camel Case** work on the lines selected, or every line, and on
 the words selected, or the caret's.
-
-## Updates
-
-Release builds check GitHub Releases for a new version every hour, the first time 10 seconds after launch and again
-when the computer wakes. A new version shows in the status bar, on the welcome page, and in the menu as **Mayoi → Update
-to 0.12.0…** (**Help → Update to 0.12.0…** on Linux and Windows); without one the item reads **Check for Updates…** and
-checks right away. Clicking any of them opens a window with the release notes that offers to install the update, skip
-that version, which hides it, or remind you later. Updates download only what changed when they can, are checked
-against Mayoi's signing key, and apply when Mayoi relaunches. Development builds, and copies Mayoi can't write to, never
-check.

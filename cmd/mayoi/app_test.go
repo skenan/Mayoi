@@ -42,10 +42,6 @@ type fakeHost struct {
 	image     []byte
 	// chosen are the paths the dialog of choosePaths answers.
 	chosen []string
-	// newVersion is the update a check found, and updateOpens counts the
-	// update windows opened.
-	newVersion  string
-	updateOpens int
 }
 
 func (h *fakeHost) openFolder(done func(string)) { done(h.folder) }
@@ -88,8 +84,6 @@ func (h *fakeHost) menuChanged()              {}
 func (h *fakeHost) redrawWindows()            {}
 func (h *fakeHost) installCLI()               {}
 func (h *fakeHost) uninstallCLI()             {}
-func (h *fakeHost) update() string            { return h.newVersion }
-func (h *fakeHost) installUpdate()            { h.updateOpens++ }
 func (h *fakeHost) stepProject(int)           {}
 func (h *fakeHost) showProject(int)           {}
 func (h *fakeHost) closeProject()             {}

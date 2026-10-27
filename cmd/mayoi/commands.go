@@ -8,7 +8,6 @@ import (
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/i18n"
-	"github.com/egoist/mygo/plugins/updater"
 	"github.com/egoist/mygo/ui"
 
 	"mayoi/internal/keymap"
@@ -356,16 +355,6 @@ func (a *app) fontZoom(by float32) {
 	a.host.redrawWindows()
 }
 
-// updateItem is "Check for Updates…", or "Update to 0.12.0…" once a
-// check found that version.
-func (a *app) updateItem() *mygo.MenuItem {
-	it := updater.MenuItem()
-	if v := a.host.update(); v != "" {
-		it.Label = locales.MenuUpdateTo(v)
-	}
-	return it
-}
-
 // menu is the menu bar, which the windows share: its items run the
 // command of the window they are chosen in, by run. cli adds the items
 // that install the mayoi command; builds that can update themselves get
@@ -435,14 +424,9 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 	if cli {
 		file = append(file, mygo.Separator(), item("file.installCLI"), item("file.uninstallCLI"))
 	}
-	// The app menu of macOS, as RoleAppMenu makes it, with room for
-	// "Check for Updates…" after About, and the Help menu elsewhere with it.
+	// The app menu of macOS, as RoleAppMenu makes it.
 	var help []*mygo.MenuItem
 	about := []*mygo.MenuItem{{Role: mygo.RoleAbout}}
-	if mygo.Updater.Enabled() {
-		about = append(about, a.updateItem())
-		help = append(help, a.updateItem(), mygo.Separator())
-	}
 	appMenu := &mygo.MenuItem{Role: mygo.RoleAppMenu}
 	if runtime.GOOS == "darwin" {
 		help = nil

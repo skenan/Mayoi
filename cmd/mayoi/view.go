@@ -993,9 +993,6 @@ func (a *app) statusFit(c *ui.Context, width float32) statusVisibility {
 		add(&v.indent, measure(d.indent.String(), false))
 		add(&v.language, measure(highlight.DisplayName(d.hl.Lexer()), false))
 	}
-	if version := a.host.update(); version != "" {
-		used += measure(version, true)
-	}
 	if repo := a.repository(); repo.gitSyncVisible() {
 		used += 2*6 + 12 + 2 // the sync icon stays beside the branch
 		if label := repo.gitSyncLabel(); label != "" {
@@ -1200,10 +1197,6 @@ func (a *app) statusBar(c *ui.Context) {
 		}
 		a.reviewStatus(c, text)
 		ui.Spacer(c)
-		// A new version of Mayoi is last, at the right.
-		if v := a.host.update(); v != "" {
-			defer item("update", v, locales.UpdateAvailable(v), iconUpdate, a.host.installUpdate)
-		}
 		if v := a.activeViewer(); v != nil {
 			a.viewerStatus(c, v, item, text)
 			return
@@ -1361,11 +1354,6 @@ func (a *app) welcome(c *ui.Context) {
 						ui.Text(c, locales.WelcomeTagline()).FontSize(13).TextColor(p.muted)
 					})
 				})
-				if v := a.host.update(); v != "" {
-					a.welcomeSection(c, locales.WelcomeUpdate(), 30*time.Millisecond, func() {
-						a.welcomeAction(c, iconUpdate, locales.UpdateAvailable(v), "", a.host.installUpdate)
-					})
-				}
 				a.welcomeSection(c, locales.WelcomeStart(), 60*time.Millisecond, func() {
 					if a.root == "" {
 						a.welcomeAction(c, iconFolderOpen, locales.CmdFileOpenFolder(), a.keyHint("file.openFolder"), a.chooseFolder)

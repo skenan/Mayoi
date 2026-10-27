@@ -19,7 +19,6 @@ All of Mayoi's files are in one data folder:
 | `keybindings.json`  | you           | [Keyboard shortcuts](#keybindingsjson), in VS Code's format                       |
 | `state.json`        | Mayoi         | Windows, tabs, recent folders and layout                                          |
 | `window-state.json` | Mayoi         | Each window's position and size                                                   |
-| `updater.json`      | Mayoi         | Update choices: automatic downloads, a skipped version, the last check            |
 | `crash.log`         | Mayoi         | Mayoi's version and system, then what ended it if it crashed, with every stack    |
 | `crashes/`          | Mayoi         | The last 10 crash logs, by time                                                   |
 
@@ -180,7 +179,7 @@ differ in width lines them up only roughly.
 
 ## Files Mayoi keeps itself
 
-`state.json`, `window-state.json` and `updater.json` are Mayoi's memory, not settings. Mayoi writes them as it runs,
+`state.json` and `window-state.json` are Mayoi's memory, not settings. Mayoi writes them as it runs,
 so it overwrites any change you make to one while it's open. To start fresh, quit Mayoi and delete the file.
 
 - **`state.json`** holds the open windows with their folders, columns and tabs, each tab with its caret, selection,
@@ -188,7 +187,6 @@ so it overwrites any change you make to one while it's open. To start fresh, qui
   Mayoi restores when one opens again, and each window's layout: its sidebar's view, whether it is open and its width,
   and its panel's height and, at a side, its width. Deleting it forgets all of that.
 - **`window-state.json`** holds each window's position and size.
-- **`updater.json`** holds your choices in the update window. See [Updates](FEATURES.md#updates).
 
 Versions before 0.5.1 kept the windows and layout in `settings.json`. Mayoi moves them to `state.json` the first time
 it starts.
