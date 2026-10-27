@@ -1856,6 +1856,26 @@ func (msgs Messages) CmdGoDefinition() string {
 	return Catalog.Format(msgs.locale, "cmdGoDefinition", nil)
 }
 
+// CmdGoBack says "Back"
+// in the language the app shows.
+func CmdGoBack() string { return In(i18n.Locale()).CmdGoBack() }
+
+// CmdGoBack says "Back"
+// in the language of msgs.
+func (msgs Messages) CmdGoBack() string {
+	return Catalog.Format(msgs.locale, "cmdGoBack", nil)
+}
+
+// CmdGoForward says "Forward"
+// in the language the app shows.
+func CmdGoForward() string { return In(i18n.Locale()).CmdGoForward() }
+
+// CmdGoForward says "Forward"
+// in the language of msgs.
+func (msgs Messages) CmdGoForward() string {
+	return Catalog.Format(msgs.locale, "cmdGoForward", nil)
+}
+
 // CmdRemoteConnect says "Connect to Host…"
 // in the language the app shows.
 func CmdRemoteConnect() string { return In(i18n.Locale()).CmdRemoteConnect() }

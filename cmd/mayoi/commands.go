@@ -68,8 +68,8 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"edit.findInFiles", t.CmdEditFindInFiles(), "Shift+CmdOrCtrl+F", func() { a.showSearch(false) }},
 		{"edit.replaceInFiles", t.CmdEditReplaceInFiles(), "Shift+CmdOrCtrl+H", func() { a.showSearch(true) }},
 		{"sel.comment", t.CmdSelComment(), "CmdOrCtrl+/", a.editActive(toggleComment)},
-		{"sel.indent", t.CmdSelIndent(), "CmdOrCtrl+]", a.editActive(func(d *editor) { indentLines(d, false) })},
-		{"sel.outdent", t.CmdSelOutdent(), "CmdOrCtrl+[", a.editActive(func(d *editor) { indentLines(d, true) })},
+		{"sel.indent", t.CmdSelIndent(), "", a.editActive(func(d *editor) { indentLines(d, false) })},
+		{"sel.outdent", t.CmdSelOutdent(), "", a.editActive(func(d *editor) { indentLines(d, true) })},
 		// The arrows with Alt are the editor's own keys, which the terminal
 		// takes too.
 		{"sel.moveUp", t.CmdSelMoveUp(), "", a.editActive(func(d *editor) { moveLines(d, false) })},
@@ -93,6 +93,8 @@ func (a *app) commandsIn(t locales.Messages) []command {
 		{"go.line", t.CmdGoLine(), "Ctrl+G", func() { a.openQuick(":") }},
 		{"go.symbol", t.CmdGoSymbol(), "Shift+CmdOrCtrl+O", func() { a.openQuick("@") }},
 		{"go.definition", t.CmdGoDefinition(), "F12", a.goToDefinition},
+		{"go.back", t.CmdGoBack(), "CmdOrCtrl+[", a.goBack},
+		{"go.forward", t.CmdGoForward(), "CmdOrCtrl+]", a.goForward},
 		{"go.nextTab", t.CmdGoNextTab(), "Ctrl+Tab", func() { a.cycleTab(1) }},
 		{"go.prevTab", t.CmdGoPrevTab(), "Ctrl+Shift+Tab", func() { a.cycleTab(-1) }},
 		{"go.nextProject", t.CmdGoNextProject(), "Shift+CmdOrCtrl+]", func() { a.host.stepProject(1) }},
@@ -501,7 +503,7 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 			{Role: mygo.RoleToggleFullScreen}, {Role: mygo.RoleToggleDevTools},
 		}},
 		{Label: locales.MenuGo(), Submenu: []*mygo.MenuItem{
-			item("go.quickOpen"), item("go.commands"), item("go.symbol"), item("go.definition"), item("go.line"), item("go.bracket"), mygo.Separator(),
+			item("go.quickOpen"), item("go.commands"), item("go.back"), item("go.forward"), mygo.Separator(), item("go.symbol"), item("go.definition"), item("go.line"), item("go.bracket"), mygo.Separator(),
 			item("go.nextTab"), item("go.prevTab"), mygo.Separator(),
 			item("go.nextProject"), item("go.prevProject"),
 		}},

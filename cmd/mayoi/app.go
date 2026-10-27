@@ -270,6 +270,7 @@ type app struct {
 
 	quick      quickOpen
 	defs       defPicker         // the box of the definitions of a name
+	jumps      jumps             // the places to go back and forward to
 	palette    []paletteEntry    // the commands of the command palette, made as it first opens
 	waits      []docWait         // the mayoi --wait commands waiting for documents to close
 	hints      map[string]string // the keys of the commands, as tooltips show them
@@ -441,7 +442,7 @@ func (a *app) openFolder(dir string) {
 		a.tree.Close()
 	}
 	if a.root != dir {
-		a.closed = nil
+		a.closed, a.jumps = nil, jumps{}
 	}
 	a.root = dir
 	a.attachRemote(dir)

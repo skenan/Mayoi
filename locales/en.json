@@ -410,6 +410,8 @@
   "cmdGoQuickOpen": "Quick Open…",
   "cmdGoSymbol": "Go to Symbol…",
   "cmdGoDefinition": "Go to Definition",
+  "cmdGoBack": "Back",
+  "cmdGoForward": "Forward",
   "cmdRemoteConnect": "Connect to Host…",
   "cmdRemoteDisconnect": "Disconnect from Host",
   "cmdRemoteForwardPort": "Forward a Port…",

@@ -282,6 +282,7 @@ func (a *app) showDefinitions(name string, hits []defHit, here string, caretLine
 
 // openDefinition shows a definition in the editor, its name selected.
 func (a *app) openDefinition(name string, h defHit) {
+	a.markJump()
 	a.openText(func() { a.openFile(h.path, true) })
 	a.selectMatch(h.path, searchMatch{line: h.Line, col: h.Col, text: name})
 }

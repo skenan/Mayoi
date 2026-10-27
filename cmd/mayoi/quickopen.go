@@ -93,6 +93,7 @@ func (a *app) quickOpenView(c *ui.Context) {
 		}
 		rel := a.index[q.results[i].Index]
 		q.open = false
+		a.markJump()
 		a.openFile(inDir(a.root, rel), true)
 	}
 	ui.Overlay(c, func() {
@@ -271,6 +272,7 @@ func (a *app) goToLine(line, col int) {
 	if d == nil {
 		return
 	}
+	a.markJump()
 	snap := d.buf.Snapshot()
 	l := max(0, min(line-1, snap.LineCount()-1))
 	s, e := snap.LineRange(l)
@@ -343,6 +345,7 @@ func (a *app) quickSymbols(c *ui.Context, query string) {
 		}
 		q.open = false
 		if d := a.activeEditor(); d != nil {
+			a.markJump()
 			sym := syms[q.results[i].Index]
 			a.editActive(func(d *editor) {
 				// To the line, with the name selected.

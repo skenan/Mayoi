@@ -108,6 +108,7 @@ To open folders from a shell, choose **File → Install 'mayoi' Command** (on Li
 |---|---|
 | ⌘E / ⇧⌘O / ⌃G | Quick open / go to symbol / go to line |
 | F12, ⌘-click | Go to definition |
+| ⌘[ / ⌘] | Back / forward to where a jump left |
 | ⌘F / ⌘K / ⌘G | Find / replace / next match |
 | ⇧⌘F or ⌃H / ⇧⌘H | Find in files / replace in files |
 | ⌘S / ⇧⌘S / ⌥⌘S | Save / save as / save all |
@@ -117,7 +118,7 @@ To open folders from a shell, choose **File → Install 'mayoi' Command** (on Li
 | ⌘\\ / ⌥⌘→ / ⌥⌘← | Split right / next column / previous column |
 | ⌘B / ⌘J / ⌃⇧\` | Toggle sidebar / toggle terminal panel / new terminal |
 | ⌘Z / ⇧⌘Z | Undo / redo |
-| Tab / ⇧Tab, ⌘] / ⌘[ | Indent / outdent |
+| Tab / ⇧Tab | Indent / outdent |
 | ⌘/ | Toggle line comment |
 | ⌥↑ / ⌥↓, ⇧⌥↑ / ⇧⌥↓ | Move line / copy line |
 | ⌘D / ⌘↵ / ⇧⌘↵ | Delete line / insert line below / insert line above |

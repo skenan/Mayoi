@@ -258,6 +258,8 @@ var vscodeCommands = map[string]string{
 	"workbench.action.gotoSymbol":                "go.symbol",
 	"editor.action.revealDefinition":             "go.definition",
 	"editor.action.goToDeclaration":              "go.definition",
+	"workbench.action.navigateBack":              "go.back",
+	"workbench.action.navigateForward":           "go.forward",
 	"workbench.action.nextEditor":                "go.nextTab",
 	"workbench.action.previousEditor":            "go.prevTab",
 	"workbench.action.toggleSidebarVisibility":   "view.sidebar",

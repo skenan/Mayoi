@@ -19,6 +19,7 @@ needs a `## <version>` section here, or its build fails.
 - The panel's terminals of the folder left keep running, and come back when you open it again.
 - `F12` or ⌘-click on a name goes to its definition, in the file or the folder's files of its language.
 - When a name has several definitions, a box lists them to choose one.
+- `⌘[` goes back to where a jump left, and `⌘]` forward again; `Tab` and `⇧Tab` still indent.
 
 ## 0.13.0
 
