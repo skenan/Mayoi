@@ -34,6 +34,16 @@ type session struct {
 	// lost is set while a terminal of a host waits for the connection
 	// that ended it, to start again.
 	lost bool
+	// ended is set when the program of a parked terminal ends, which goes
+	// as its folder shows again.
+	ended bool
+}
+
+// parkedPanel is the panel's terminals of a folder the window left, and
+// the one it showed.
+type parkedPanel struct {
+	terms []*session
+	shown *session
 }
 
 type panelHeaderLayout struct {
@@ -408,7 +418,51 @@ func (a *app) closeTerminals() {
 	for _, s := range a.terms {
 		s.term.Close()
 	}
-	a.terms, a.panelTerm = nil, nil
+	for _, p := range a.parked {
+		for _, s := range p.terms {
+			s.term.Close()
+		}
+	}
+	a.terms, a.panelTerm, a.parked = nil, nil, nil
+}
+
+// parkTerminals keeps the panel's terminals with the folder the window
+// leaves, running out of sight.
+func (a *app) parkTerminals() {
+	terms := a.panelTerms()
+	if len(terms) == 0 {
+		return
+	}
+	if a.parked == nil {
+		a.parked = map[string]parkedPanel{}
+	}
+	a.parked[a.root] = parkedPanel{terms: terms, shown: a.panelTerm}
+	a.terms = slices.DeleteFunc(a.terms, func(s *session) bool { return s.tab == nil })
+	a.panelTerm = nil
+}
+
+// unparkTerminals shows again in the panel the terminals of the folder
+// the window opened, as it left them, but those whose program ended.
+func (a *app) unparkTerminals() {
+	p, ok := a.parked[a.root]
+	if !ok {
+		return
+	}
+	delete(a.parked, a.root)
+	// The theme, the font and the settings may have changed meanwhile.
+	light, dark := a.termThemes()
+	for _, s := range p.terms {
+		s.term.SetTheme(light, dark)
+		s.term.SetFont(termFont(a.settings))
+		s.term.SetCopyOnSelect(copyOnSelect(a.settings.TerminalCopyOnSelect))
+	}
+	a.terms = append(a.terms, p.terms...)
+	a.panelTerm = p.shown
+	for _, s := range p.terms {
+		if s.ended {
+			a.removeTerminal(s)
+		}
+	}
 }
 
 // hidePanel hides the panel, and gives the keyboard back to the column.

@@ -2,6 +2,7 @@ package main
 
 import (
 	"path"
+	"slices"
 
 	"github.com/egoist/mygo/plugins/terminal"
 
@@ -24,6 +25,10 @@ func lostNote(host string) string {
 func (a *app) terminalExited(s *session, t *terminal.Terminal, code int) {
 	if s.term != t {
 		return // one restarted in its place
+	}
+	if !slices.Contains(a.terms, s) {
+		s.ended = true // parked, with its folder out of sight
+		return
 	}
 	// ssh exits with 255 when the connection fails, which a shell does
 	// only if asked.

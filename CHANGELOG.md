@@ -11,6 +11,8 @@ needs a `## <version>` section here, or its build fails.
 - Signing in to a Mon account and settings sync are removed, along with the status bar's cloud.
 - **Git: Write Commit Message with AI** and the ✨ button in the commit box are removed.
 - Mayoi no longer offers to send crash reports; crash logs stay in the `crashes` folder.
+- Opening another folder in a window starts the panel's terminal in that folder.
+- The panel's terminals of the folder left keep running, and come back when you open it again.
 
 ## 0.13.0
 

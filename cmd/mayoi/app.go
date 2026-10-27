@@ -232,6 +232,10 @@ type app struct {
 	terms     []*session
 	panelTerm *session
 	nextTerm  int
+	// parked are the panel's terminals of the folders the window left, by
+	// folder ("" for none): they run out of sight until it shows the
+	// folder again.
+	parked map[string]parkedPanel
 	// panelScroll measures whether the terminal chips need a scroll bar;
 	// panelLayout requests a follow-up frame when their available room or
 	// titles change, so the header can use the freshly measured overflow.
@@ -499,7 +503,9 @@ func (a *app) closeFolder() {
 		}
 		a.detachRemote()
 		a.resetRepositories()
+		a.parkTerminals()
 		a.root, a.tree, a.index, a.git = "", nil, nil, gitState{}
+		a.unparkTerminals()
 		a.resetSearch()
 		a.closed = nil
 		a.window.Folder = ""

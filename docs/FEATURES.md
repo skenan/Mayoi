@@ -392,7 +392,9 @@ it at a side of the window. There it sits past the sidebar,
 so with the sidebar on the same side the panel is the outer one, and dragging its inner edge sizes it. The title bar's
 terminal button is on the panel's side too: left of the sidebar's button when both are on the left, at the right of the
 bar otherwise. You can run several terminals, move one between the panel and a column by dragging it or from its menu,
-and maximize the panel. **View → New Terminals in Editor Area**, `terminalLocation` in `settings.json`, has New Terminal
+and maximize the panel. Opening another folder in the window keeps the panel's terminals running with the folder left,
+out of sight, and shows them again as it comes back; the folder opened starts its own in its folder.
+**View → New Terminals in Editor Area**, `terminalLocation` in `settings.json`, has New Terminal
 and the Explorer's **Open in Terminal** open a tab of the editor area rather than the panel; Toggle Terminal and the
 panel's **+** still use the panel. Terminal colors follow the theme.
 Files dropped on a terminal type their paths, quoted for the shell. ⌘V with only an image on the clipboard sends an empty

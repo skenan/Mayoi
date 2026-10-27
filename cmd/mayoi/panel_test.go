@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/egoist/mygo/plugins/terminal"
 	"github.com/egoist/mygo/ui"
@@ -192,5 +193,55 @@ func TestPanelSplitTerminals(t *testing.T) {
 	a.leavePanel(third)
 	if a.panelTerm != second {
 		t.Errorf("leaving a group shows %q, want the one beside it", a.panelTerm.title)
+	}
+}
+
+// The panel's terminals stay with the folder the window leaves, running,
+// and show again as it comes back; the folder opened gets its own.
+func TestTerminalsStayWithTheirFolder(t *testing.T) {
+	featShell(t)
+	hs := newHarness(t, false)
+	a := hs.a
+	t.Cleanup(a.closeTerminals)
+	first := a.root
+	a.togglePanel()
+	hs.settle()
+	a.splitTerminal()
+	hs.settle()
+	mine, shown := a.panelTerms(), a.panelTerm
+	other := t.TempDir()
+	a.switchTo(other)
+	hs.settle()
+	if s := a.panelTerm; s == nil || s.dir != other || len(a.terms) != 1 {
+		t.Fatalf("after the switch: %d terminals, the panel's in %v, want one in %s", len(a.terms), s, other)
+	}
+	for _, s := range mine {
+		select {
+		case <-s.term.Done():
+			t.Fatal("a terminal of the folder left ended")
+		default:
+		}
+	}
+	a.switchTo(first)
+	hs.settle()
+	if got := a.panelTerms(); len(got) != 2 || got[0] != mine[0] || got[1] != mine[1] || a.panelTerm != shown {
+		t.Fatalf("back in %s: %v showing %v, want %v showing %v", first, got, a.panelTerm, mine, shown)
+	}
+	// A parked terminal whose program ended goes as its folder shows.
+	a.switchTo(other)
+	hs.settle()
+	a.terminalExited(mine[1], mine[1].term, 0)
+	a.switchTo(first)
+	hs.settle()
+	if got := a.panelTerms(); len(got) != 1 || got[0] != mine[0] {
+		t.Fatalf("after one ended out of sight: %v, want %v", got, mine[:1])
+	}
+	a.switchTo(other)
+	hs.settle()
+	a.closeTerminals()
+	select {
+	case <-mine[0].term.Done():
+	case <-time.After(5 * time.Second):
+		t.Error("closing the window left a parked terminal running")
 	}
 }

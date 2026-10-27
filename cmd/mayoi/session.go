@@ -26,13 +26,19 @@ func (a *app) stash(ses settings.Session) {
 // openSession opens dir in the window, with the tabs it had when a
 // window last closed it.
 func (a *app) openSession(dir string) {
+	a.parkTerminals()
 	a.openFolder(dir)
+	a.unparkTerminals()
+	// The panel open shows a terminal of the folder, the keyboard staying
+	// where it is.
+	if a.panelTerm == nil && a.window.PanelOpen && a.window.TerminalOpen {
+		a.panelTerm = a.startTerminal(a.workDir())
+	}
 	ses := a.settings.TakeSession(dir)
 	if ses == nil {
 		return
 	}
-	// The panel and its terminals are the window's still, and the
-	// folder's layout its own.
+	// The panel is the window's still, and the folder's layout its own.
 	a.window.Columns, a.window.Column, a.window.FileColumn, a.window.Expanded = ses.Columns, ses.Column, ses.FileColumn, ses.Expanded
 	a.window.Review = ses.Review
 	if ses.SidebarWidth != 0 {
