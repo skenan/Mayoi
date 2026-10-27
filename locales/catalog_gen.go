@@ -2490,6 +2490,16 @@ func (msgs Messages) CmdViewSplitRight() string {
 	return Catalog.Format(msgs.locale, "cmdViewSplitRight", nil)
 }
 
+// CmdViewSplitTerminal says "Split Terminal"
+// in the language the app shows.
+func CmdViewSplitTerminal() string { return In(i18n.Locale()).CmdViewSplitTerminal() }
+
+// CmdViewSplitTerminal says "Split Terminal"
+// in the language of msgs.
+func (msgs Messages) CmdViewSplitTerminal() string {
+	return Catalog.Format(msgs.locale, "cmdViewSplitTerminal", nil)
+}
+
 // CmdViewTerminal says "Toggle Terminal"
 // in the language the app shows.
 func CmdViewTerminal() string { return In(i18n.Locale()).CmdViewTerminal() }

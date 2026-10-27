@@ -138,3 +138,59 @@ func TestPanelTerminalChipsStayClickable(t *testing.T) {
 		}
 	}
 }
+
+// Terminals split in the panel show side by side under one chip, and the
+// rest of a group keeps together as one of it goes.
+func TestPanelSplitTerminals(t *testing.T) {
+	if testing.Short() {
+		t.Skip("loads libghostty-vt")
+	}
+	hs := newHarness(t, false)
+	a := hs.a
+	t.Cleanup(a.closeTerminals)
+	for i := range 3 {
+		conn, peer := net.Pipe()
+		t.Cleanup(func() { peer.Close() })
+		term, err := terminal.New(terminal.Options{Conn: conn})
+		if err != nil {
+			conn.Close()
+			t.Fatal(err)
+		}
+		a.terms = append(a.terms, &session{id: i + 1, term: term, title: fmt.Sprintf("t%d", i+1)})
+	}
+	first, second, third := a.terms[0], a.terms[1], a.terms[2]
+	second.split = first
+	first.share, second.share = 0.5, 0.5
+	a.panelTerm = second
+	var l, r ui.Rect
+	tt := ui.NewTester(func(c *ui.Context) {
+		a.pal = a.applyTheme(c)
+		a.panel(c)
+		l, r = first.view.Bounds(c), second.view.Bounds(c)
+	}, 1000, 280)
+	hs.tt = tt
+	for range 3 {
+		step(tt)
+	}
+	if _, ok := tt.Find("t1, t2"); !ok {
+		t.Error("no chip for the split group")
+	}
+	if _, ok := tt.Find("t3"); !ok {
+		t.Error("no chip for the terminal on its own")
+	}
+	if l.W < 400 || r.W < 400 || r.X < l.X+l.W {
+		t.Errorf("split terminals at %v and %v, want side by side halves", l, r)
+	}
+	hs.shot("terminal-split")
+
+	a.leavePanel(first)
+	if second.split != nil || a.groupTerms(second)[0] != second || a.panelTerm != second {
+		t.Errorf("the rest of the group lost its head")
+	}
+	third.split = second
+	a.panelTerm = third
+	a.leavePanel(third)
+	if a.panelTerm != second {
+		t.Errorf("leaving a group shows %q, want the one beside it", a.panelTerm.title)
+	}
+}

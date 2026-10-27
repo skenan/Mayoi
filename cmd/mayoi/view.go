@@ -94,11 +94,16 @@ func (a *app) view(c *ui.Context) {
 		}
 	}
 	a.autoSaveTick()
-	switch {
-	case a.panelTerm != nil && a.panelTerm.view.FocusWithin(c):
-		a.focus = paneTerminal
-	case a.files.List.FocusWithin(c):
+	if a.files.List.FocusWithin(c) {
 		a.focus = paneFiles
+	}
+	// The panel shows the one of a group that has the keyboard.
+	if s := a.panelTerm; s != nil {
+		for _, t := range a.groupTerms(s) {
+			if t.view.FocusWithin(c) {
+				a.panelTerm, a.focus = t, paneTerminal
+			}
+		}
 	}
 
 	ui.Column(c).Fill().Background(p.chrome).Children(func() {

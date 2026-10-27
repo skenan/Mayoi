@@ -240,6 +240,7 @@ var vscodeCommands = map[string]string{
 	"workbench.action.terminal.toggleTerminal":   "view.terminal",
 	"workbench.action.togglePanel":               "view.terminal",
 	"workbench.action.terminal.new":              "view.newTerminal",
+	"workbench.action.terminal.split":            "view.splitTerminal",
 	"workbench.action.createTerminalEditor":      "view.terminalTab",
 	"workbench.action.positionPanelBottom":       "view.panelPosition.bottom",
 	"workbench.action.positionPanelLeft":         "view.panelPosition.left",

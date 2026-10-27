@@ -473,6 +473,7 @@
   "cmdViewSidebar": "Toggle Sidebar",
   "cmdViewSidebarRight": "Sidebar on Right",
   "cmdViewSplitRight": "Split Right",
+  "cmdViewSplitTerminal": "Split Terminal",
   "cmdViewTerminal": "Toggle Terminal",
   "cmdViewTerminalLocation": "New Terminals in Editor Area",
   "cmdViewTerminalLockRight": "Move Terminal to Locked Right Column",

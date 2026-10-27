@@ -687,8 +687,12 @@ func (a *app) splitColumn(col *column, after bool) *column {
 
 // splitRight opens a column to the right of the one that has the
 // keyboard, showing its document again where it is scrolled, or a new
-// terminal beside a terminal.
+// terminal beside a terminal. From the panel, it splits its terminal.
 func (a *app) splitRight() {
+	if a.focus == paneTerminal && a.panelTerm != nil {
+		a.splitTerminal()
+		return
+	}
 	col := a.column()
 	t := col.tab()
 	if t == nil {

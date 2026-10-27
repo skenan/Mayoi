@@ -26,6 +26,11 @@ type session struct {
 	dir   string
 	view  ui.Handle // its view, which takes the keyboard
 	tab   *colTab   // the tab that shows it, nil for one of the panel
+	// split is the terminal of the panel this one was split from, which
+	// it shows beside, nil for the first of its group; share is its part
+	// of the group's width, 0 for an even one.
+	split *session
+	share float32
 	// lost is set while a terminal of a host waits for the connection
 	// that ended it, to start again.
 	lost bool
@@ -249,9 +254,61 @@ func (a *app) panelTerms() []*session {
 	return out
 }
 
+// lead is the first terminal of the group of s, which its chip stands
+// for.
+func (s *session) lead() *session {
+	if s.split != nil {
+		return s.split
+	}
+	return s
+}
+
+// weight is the part of its group's width a terminal takes.
+func (s *session) weight() float32 {
+	if s.share == 0 {
+		return 1
+	}
+	return s.share
+}
+
+// groupTerms returns the terminals of the panel shown side by side with
+// s, from left to right, s among them.
+func (a *app) groupTerms(s *session) []*session {
+	var out []*session
+	for _, t := range a.panelTerms() {
+		if t.lead() == s.lead() {
+			out = append(out, t)
+		}
+	}
+	return out
+}
+
+// splitTerminal starts a terminal beside the one the panel shows, in its
+// folder, the two halving its room.
+func (a *app) splitTerminal() {
+	s := a.panelTerm
+	if s == nil {
+		a.newTerminal()
+		return
+	}
+	n := a.startTerminal(s.dir)
+	if n == nil {
+		return
+	}
+	// Right after s, which startTerminal appended it past.
+	a.terms = slices.Insert(a.terms[:len(a.terms)-1], slices.Index(a.terms, s)+1, n)
+	n.split = s.lead()
+	s.share = s.weight() / 2
+	n.share = s.share
+	a.panelTerm = n
+	a.window.PanelOpen, a.window.TerminalOpen = true, true
+	a.settings.Changed()
+	a.focusTerminal()
+}
+
 // leavePanel has the panel show another of its terminals in place of s,
-// which goes: the one after it, or the one before the last. The panel
-// hides after its last.
+// which goes: the one beside it in its group, else the one after it, or
+// the one before the last. The panel hides after its last.
 func (a *app) leavePanel(s *session) {
 	rest := a.panelTerms()
 	i := slices.Index(rest, s)
@@ -259,9 +316,22 @@ func (a *app) leavePanel(s *session) {
 		return
 	}
 	rest = slices.Delete(rest, i, i+1)
+	group := a.groupTerms(s)
+	j := slices.Index(group, s)
+	group = slices.Delete(group, j, j+1)
+	// The first of the rest of its group heads it.
+	for _, t := range group {
+		t.split = nil
+		if t != group[0] {
+			t.split = group[0]
+		}
+	}
+	s.split, s.share = nil, 0
 	if a.panelTerm == s {
 		a.panelTerm = nil
-		if len(rest) > 0 {
+		if len(group) > 0 {
+			a.panelTerm = group[max(j-1, 0)]
+		} else if len(rest) > 0 {
 			a.panelTerm = rest[min(i, len(rest)-1)]
 		}
 	}
@@ -429,6 +499,9 @@ func (a *app) panel(c *ui.Context) {
 			// to a column makes a tab of it.
 			ui.ScrollHorizontal(c.Key("terms")).TrackScroll(&a.panelScroll).Grow(1).Height(panelHeadH+scrollbarH).Padding(0, 0, scrollbarH, 0).Children(func() {
 				ui.Row(c).Gap(2).AlignItems(ui.Center).Children(func() {
+					// A chip for each terminal; one split from another has the
+					// icon of columns, and the others of its group shown with
+					// the one that has the keyboard are tinted.
 					for i, s := range terms {
 						chip := ui.ButtonBase(c.Key(s.id)).Padding(3, 8).Gap(6).Radius(5).AlignItems(ui.Center).Label(s.title).
 							Drag(dragItem{term: s}).Transition(tabMotion)
@@ -436,13 +509,18 @@ func (a *app) panel(c *ui.Context) {
 							a.dragNow = true
 						}
 						on := s == a.panelTerm
+						shown := a.panelTerm != nil && s.lead() == a.panelTerm.lead()
 						if on {
 							chip.Background(p.active)
-						} else if chip.Hovered() {
+						} else if shown || chip.Hovered() {
 							chip.Background(p.hover)
 						}
 						chip.Children(func() {
-							ui.Icon(c, iconTerminal).FontSize(12).TextColor(p.muted)
+							icon := iconTerminal
+							if s.split != nil {
+								icon = iconColumns
+							}
+							ui.Icon(c, icon).FontSize(12).TextColor(p.muted)
 							col := p.muted
 							if on {
 								col = p.text
@@ -472,6 +550,9 @@ func (a *app) panel(c *ui.Context) {
 					a.newTerminal()
 				}
 				if s := a.panelTerm; s != nil {
+					if a.iconButton(c, iconColumns, a.withKey(locales.CmdViewSplitTerminal(), "view.splitTerminal"), false).Clicked() {
+						a.splitTerminal()
+					}
 					if a.iconButton(c, iconToEditor, locales.TermMoveToEditor(), false).Clicked() {
 						a.post(func() { a.terminalToColumn(s, a.column(), a.column().active+1) })
 					}
@@ -510,12 +591,56 @@ func (a *app) panel(c *ui.Context) {
 					}
 				})
 			} else {
-				a.terminalView(c, s)
+				a.terminalGroup(c, s)
 			}
 			if over.tab != nil && over.tab.term != nil || filesOver {
 				a.dropMark(c)
 			}
 		})
+	})
+}
+
+// minTermW is the least width of a terminal of the panel beside another.
+const minTermW = 120
+
+// terminalGroup shows the group of s in the panel, side by side, with a
+// splitter between each two.
+func (a *app) terminalGroup(c *ui.Context, s *session) {
+	group := a.groupTerms(s)
+	if len(group) == 1 {
+		a.terminalView(c, s)
+		return
+	}
+	row := ui.Row(c).Fill().AlignItems(ui.Stretch)
+	width := row.Bounds().W
+	var total float32
+	for _, t := range group {
+		total += t.weight()
+	}
+	row.Children(func() {
+		for i, t := range group {
+			pane := ui.Box(c.Key(t.id)).Grow(t.weight()).Basis(0).MinWidth(0)
+			if i > 0 {
+				pane.BorderWidth(0, 0, 0, 1).BorderColor(a.pal.border)
+			}
+			pane.Children(func() {
+				a.terminalView(c, t)
+				if i == 0 || width == 0 {
+					return
+				}
+				// Dragging the edge trades room with the one on the left,
+				// each keeping a few columns.
+				left := group[i-1]
+				a.splitter(c, edgeLeft, func(d float32) {
+					least := minTermW / width * total
+					by := d / width * total
+					if lo, hi := least-left.weight(), t.weight()-least; lo <= hi {
+						by = clamp(by, lo, hi)
+						left.share, t.share = left.weight()+by, t.weight()-by
+					}
+				})
+			})
+		}
 	})
 }
 
