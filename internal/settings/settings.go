@@ -502,7 +502,8 @@ func (s *Settings) Path() string { return s.path }
 
 // NewWindow keeps a new window, focused first, and names its frame by
 // the first ID no other window has. It is laid out as the window focused
-// last is.
+// last is, but with the sidebar open on the explorer: what that window's
+// sidebar shows is of its folder.
 func (s *Settings) NewWindow() *Window {
 	id := 0
 	for slices.ContainsFunc(s.Windows, func(w *Window) bool { return w.ID == id }) {
@@ -512,6 +513,7 @@ func (s *Settings) NewWindow() *Window {
 	w.Layout = DefaultLayout
 	if len(s.Windows) > 0 {
 		w.Layout = s.Windows[0].Layout
+		w.SidebarView, w.SidebarClosed = "", false
 	}
 	s.Windows = slices.Insert(s.Windows, 0, w)
 	s.Changed()

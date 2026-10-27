@@ -17,7 +17,13 @@ func TestRoundTrip(t *testing.T) {
 	w.Folder, w.Columns = "/tmp/x", []Column{{Tabs: []Tab{{File: "/tmp/x/a.go"}}}}
 	w.SidebarWidth = 300
 	w.ScmChangesRatio = 0.65
-	// Laid out as the window focused last, then as it chooses.
+	w.SidebarView, w.SidebarClosed = "search", true
+	// Laid out as the window focused last, with the sidebar open on the
+	// explorer, then as it chooses.
+	if y := s.NewWindow(); y.SidebarView != "" || y.SidebarClosed || y.SidebarWidth != 300 {
+		t.Errorf("new window's layout %+v", y.Layout)
+	}
+	s.Windows = s.Windows[1:]
 	y := s.NewWindow()
 	y.Folder = "/tmp/y"
 	y.SidebarView = "git"
@@ -27,7 +33,7 @@ func TestRoundTrip(t *testing.T) {
 		got.Windows[1].Folder != "/tmp/x" || len(got.Windows[1].Columns) != 1 {
 		t.Errorf("loaded %+v", got)
 	}
-	if x, y := got.Windows[1].Layout, got.Windows[0].Layout; x.SidebarWidth != 300 || x.SidebarView != "" || x.ScmChangesRatio != 0.65 ||
+	if x, y := got.Windows[1].Layout, got.Windows[0].Layout; x.SidebarWidth != 300 || x.SidebarView != "search" || x.ScmChangesRatio != 0.65 ||
 		y.SidebarWidth != 300 || y.SidebarView != "git" || y.PanelHeight != DefaultLayout.PanelHeight {
 		t.Errorf("layouts %+v and %+v", x, y)
 	}
