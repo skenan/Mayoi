@@ -34,6 +34,10 @@ const (
 	// panelTitleW is the least width of a panel at a side that still
 	// shows its title, past the room its terminals and tools need.
 	panelTitleW = 300
+	// panelSplitW is the least width of a panel at a side that still
+	// shows the button to split a terminal, which the narrowest one, at
+	// minPanelW, has no room for beside the other tools.
+	panelSplitW = 220
 )
 
 // view builds the window: a title bar, the explorer beside the editor

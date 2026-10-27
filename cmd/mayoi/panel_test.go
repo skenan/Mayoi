@@ -174,11 +174,10 @@ func TestPanelSplitTerminals(t *testing.T) {
 	for range 3 {
 		step(tt)
 	}
-	if _, ok := tt.Find("t1, t2"); !ok {
-		t.Error("no chip for the split group")
-	}
-	if _, ok := tt.Find("t3"); !ok {
-		t.Error("no chip for the terminal on its own")
+	for _, title := range []string{"t1", "t2", "t3"} {
+		if _, ok := tt.Find(title); !ok {
+			t.Errorf("no chip for %s", title)
+		}
 	}
 	if l.W < 400 || r.W < 400 || r.X < l.X+l.W {
 		t.Errorf("split terminals at %v and %v, want side by side halves", l, r)

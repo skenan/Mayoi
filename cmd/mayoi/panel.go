@@ -538,6 +538,7 @@ func (a *app) panel(c *ui.Context) {
 		c.AnimationFrame()
 	}
 	titled := a.panelSide() == "bottom" || width == 0 || width >= panelTitleW
+	splittable := a.panelSide() == "bottom" || width == 0 || width >= panelSplitW
 	box.Children(func() {
 		head := ui.Row(c).Height(panelHeadH+scrollbarH).Padding(0, 8, 0, 14).Gap(4).AlignItems(ui.Center)
 		head.ContextMenu(a.panelMenu)
@@ -604,7 +605,7 @@ func (a *app) panel(c *ui.Context) {
 					a.newTerminal()
 				}
 				if s := a.panelTerm; s != nil {
-					if a.iconButton(c, iconColumns, a.withKey(locales.CmdViewSplitTerminal(), "view.splitTerminal"), false).Clicked() {
+					if splittable && a.iconButton(c, iconColumns, a.withKey(locales.CmdViewSplitTerminal(), "view.splitTerminal"), false).Clicked() {
 						a.splitTerminal()
 					}
 					if a.iconButton(c, iconToEditor, locales.TermMoveToEditor(), false).Clicked() {
