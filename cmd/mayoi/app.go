@@ -269,6 +269,7 @@ type app struct {
 	middle *colTab
 
 	quick      quickOpen
+	defs       defPicker         // the box of the definitions of a name
 	palette    []paletteEntry    // the commands of the command palette, made as it first opens
 	waits      []docWait         // the mayoi --wait commands waiting for documents to close
 	hints      map[string]string // the keys of the commands, as tooltips show them

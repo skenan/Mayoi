@@ -424,6 +424,10 @@ the files Git tracks, so build output stays out.
 - Type `>`, or press ⇧⌘P, to run any command by name. Each shows its menu, its shortcut and a check when it is on,
   and the commands run last come first.
 
+F12 or ⌘-click on a name goes to its definition: a function, a type, a variable, a constant, a field or a method of that
+name, in the file or in the folder's files of its language. A variable defined above in the file is the one it goes to;
+otherwise the nearest comes first, and several show in a box to choose from. Definitions are found by how lines declare names, not by a language server, so calls and imports are passed by.
+
 ## Find and replace
 
 ⌘F finds and ⌘K replaces, with options for match case, whole word and regular expressions (`$1` refers to a group). In

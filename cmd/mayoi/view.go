@@ -168,6 +168,7 @@ func (a *app) view(c *ui.Context) {
 		a.statusBar(c)
 	})
 	a.quickOpenView(c)
+	a.definitionsView(c)
 	a.branchPickerView(c)
 	a.repositoryPickerView(c)
 	a.recentPickerView(c)

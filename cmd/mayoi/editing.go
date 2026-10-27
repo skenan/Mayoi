@@ -511,6 +511,11 @@ func (a *app) editorKey(d *editor, ev ui.InputEvent) bool {
 		a.invalidate()
 		return true
 	}
+	// ⌘-click goes to the definition of the name clicked, once the click
+	// put the caret on it.
+	if ev.Kind == ui.InputPointerDown && ev.Button == 0 && ev.Clicks == 1 && ev.Mods == ui.Cmd {
+		d.cmds = append(d.cmds, a.definitionAtCaret)
+	}
 	if ev.Kind == ui.InputPointerDown && a.settings.Vim && d.vim.mode.visual() {
 		// A click ends visual mode; a drag selects anew.
 		d.vim.lastVisual = vimVisualArea{d.vim.anchor, d.vim.cursor, d.vim.mode}

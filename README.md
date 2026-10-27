@@ -107,6 +107,7 @@ To open folders from a shell, choose **File → Install 'mayoi' Command** (on Li
 | Shortcut | Action |
 |---|---|
 | ⌘E / ⇧⌘O / ⌃G | Quick open / go to symbol / go to line |
+| F12, ⌘-click | Go to definition |
 | ⌘F / ⌘K / ⌘G | Find / replace / next match |
 | ⇧⌘F or ⌃H / ⇧⌘H | Find in files / replace in files |
 | ⌘S / ⇧⌘S / ⌥⌘S | Save / save as / save all |

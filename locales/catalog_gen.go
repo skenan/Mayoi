@@ -1846,6 +1846,16 @@ func (msgs Messages) CmdGoSymbol() string {
 	return Catalog.Format(msgs.locale, "cmdGoSymbol", nil)
 }
 
+// CmdGoDefinition says "Go to Definition"
+// in the language the app shows.
+func CmdGoDefinition() string { return In(i18n.Locale()).CmdGoDefinition() }
+
+// CmdGoDefinition says "Go to Definition"
+// in the language of msgs.
+func (msgs Messages) CmdGoDefinition() string {
+	return Catalog.Format(msgs.locale, "cmdGoDefinition", nil)
+}
+
 // CmdRemoteConnect says "Connect to Host…"
 // in the language the app shows.
 func CmdRemoteConnect() string { return In(i18n.Locale()).CmdRemoteConnect() }
@@ -9914,6 +9924,26 @@ func StopForwarding() string { return In(i18n.Locale()).StopForwarding() }
 // in the language of msgs.
 func (msgs Messages) StopForwarding() string {
 	return Catalog.Format(msgs.locale, "stopForwarding", nil)
+}
+
+// DefinitionLabel says "Definitions of {name}"
+// in the language the app shows.
+func DefinitionLabel(name string) string { return In(i18n.Locale()).DefinitionLabel(name) }
+
+// DefinitionLabel says "Definitions of {name}"
+// in the language of msgs.
+func (msgs Messages) DefinitionLabel(name string) string {
+	return Catalog.Format(msgs.locale, "definitionLabel", map[string]any{"name": name})
+}
+
+// DefinitionNone says "No definition of {name} found"
+// in the language the app shows.
+func DefinitionNone(name string) string { return In(i18n.Locale()).DefinitionNone(name) }
+
+// DefinitionNone says "No definition of {name} found"
+// in the language of msgs.
+func (msgs Messages) DefinitionNone(name string) string {
+	return Catalog.Format(msgs.locale, "definitionNone", map[string]any{"name": name})
 }
 
 // SymbolLabel says "Go to Symbol"
