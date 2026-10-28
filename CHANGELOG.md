@@ -12,6 +12,7 @@ Every release needs a `## <version>` section here, or its build fails.
 - **Git: Write Commit Message with AI** and the ✨ button in the commit box are removed.
 - Mayoi no longer offers to send crash reports; crash logs stay in the `crashes` folder.
 - The `mayoi` command starts Mayoi when it is run without a `PATH`, as from Raycast.
+- Started from Raycast, the terminal shows Chinese and other non-ASCII text in `git diff` and `less`.
 - A project opened for the first time shows the Explorer, not the sidebar view of the window in front.
 - `⌘J` toggles the terminal panel, and `⌘E` opens Quick Open.
 - In the editor, `⌘K` opens replace and `⌘D` deletes the line; in a terminal, `⌘K` clears it.

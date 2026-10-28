@@ -284,6 +284,7 @@ func main() {
 	if dir, err := mygo.App.Path(mygo.PathUserData); err == nil {
 		keepCrashes(dir)
 	}
+	dropUnknownLocales()
 	// Opened from the Finder or the Dock, Mayoi has the system's PATH
 	// only; git, its hooks and what else Mayoi runs look for commands
 	// where the user's shell does. In the background, as a slow shell
@@ -820,4 +821,23 @@ func appBundle() string {
 		return app + ".app"
 	}
 	return ""
+}
+
+// dropUnknownLocales unsets the locale variables macOS has no locale of,
+// as the LC_ALL=en_US-u-hc-h12 Raycast starts programs with: the
+// terminal's programs would fall back to ASCII, and less shows Chinese
+// as <E5><AF><B9>. With them gone, the terminal sets a UTF-8 LANG.
+func dropUnknownLocales() {
+	if runtime.GOOS != "darwin" {
+		return
+	}
+	for _, k := range []string{"LC_ALL", "LC_CTYPE", "LANG"} {
+		v := os.Getenv(k)
+		if v == "" || v == "C" || v == "POSIX" {
+			continue
+		}
+		if _, err := os.Stat(filepath.Join("/usr/share/locale", v)); err != nil {
+			os.Unsetenv(k)
+		}
+	}
 }
