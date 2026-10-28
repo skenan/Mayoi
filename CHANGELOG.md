@@ -18,6 +18,7 @@ Every release needs a `## <version>` section here, or its build fails.
 - In the editor, `⌘K` opens replace and `⌘D` deletes the line; in a terminal, `⌘K` clears it.
 - `⌃H` searches the files, outside a terminal.
 - `Shift+Enter` in a terminal starts a new line in Claude Code.
+- Pale text in a terminal, as Claude Code's diffs, darkens to stay readable on a light theme.
 - Opening another folder in a window starts the panel's terminal in that folder.
 - The panel's terminals of the folder left keep running, and come back when you open it again.
 - `F12` or ⌘-click on a name goes to its definition, in the file or the folder's files of its language.

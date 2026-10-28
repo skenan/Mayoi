@@ -128,6 +128,10 @@ func (a *app) spawnTerminal(s *session, dir string) (*terminal.Terminal, error) 
 		Theme:     light,
 		DarkTheme: dark,
 		Cursor:    terminal.CursorBar,
+		// Text programs color for a dark window, as Claude Code's pale
+		// yellows and greens, darkens to read on a light one: WCAG's AA,
+		// as the palette's own text.
+		MinimumContrast: 4.5,
 		// Selecting copies, as in Ghostty and iTerm2.
 		CopyOnSelect: copyOnSelect(a.settings.TerminalCopyOnSelect),
 		OnTitle: func(title string) {
