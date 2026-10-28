@@ -186,6 +186,9 @@ type editor struct {
 	// restoreTab is where a tab of the last session was, which a remote file
 	// takes once it is read.
 	restoreTab *settings.Tab
+	// goTo is the line and column, 1-based, a remote file opened at takes
+	// once it is read; a line of 0 is none.
+	goTo [2]int
 }
 
 // newEditor makes an editor of doc, its caret at the start.

@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/egoist/mygo/plugins/terminal"
@@ -37,6 +38,9 @@ type session struct {
 	// ended is set when the program of a parked terminal ends, which goes
 	// as its folder shows again.
 	ended bool
+	// pid is the shell of a terminal of a host, on the host, as its
+	// first title said, 0 until then.
+	pid int
 }
 
 // parkedPanel is the panel's terminals of a folder the window left, and
@@ -135,7 +139,13 @@ func (a *app) spawnTerminal(s *session, dir string) (*terminal.Terminal, error) 
 		// Selecting copies, as in Ghostty and iTerm2.
 		CopyOnSelect: copyOnSelect(a.settings.TerminalCopyOnSelect),
 		OnTitle: func(title string) {
-			a.post(func() { s.title = title })
+			a.post(func() {
+				if rest, ok := strings.CutPrefix(title, remote.ShellTitle); ok {
+					s.pid, _ = strconv.Atoi(rest)
+					return
+				}
+				s.title = title
+			})
 		},
 		// A terminal of a host gets files and images pasted as copies
 		// uploaded to it.
@@ -143,8 +153,9 @@ func (a *app) spawnTerminal(s *session, dir string) (*terminal.Terminal, error) 
 			text, _ := d.Read(mtransfer.Text)
 			return a.terminalPaste(s, string(text))
 		},
-		// Local file paths open in the editor; links to a port of a
-		// remote host open the port forwarded to it here.
+		// File paths open in the editor, on the host for a terminal of
+		// one; links to a port of a host open the port forwarded to it
+		// here.
 		OpenLink: func(link string) bool { return a.terminalLink(s, link) },
 		// The shortcuts of keybindings.json, before the shell, and on
 		// Windows and Linux those of Mayoi's it leaves to Mayoi.

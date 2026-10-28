@@ -403,7 +403,7 @@ bracketed paste, as VS Code's terminal does, so that Claude Code pastes the scre
 in Ghostty and iTerm2: a drag, a double click for a word, a triple click for a line, Shift with a drag in a program
 that takes the mouse, or Select All. `terminalCopyOnSelect` turns it off.
 
-Command-click a file path in a local terminal (Control-click on Linux and Windows) to open it in Mayoi, including
+Command-click a file path in a terminal (Control-click on Linux and Windows) to open it in Mayoi, including
 files Git ignores. Recognized paths use forward slashes: `/absolute/path`, `~/path`, `./path`, `../path`, or a
 relative path containing a slash. A filename with a `:line` or `:line:column` suffix works too; the suffix places
 the caret there. Relative paths use the directory the shell reports, or the terminal's starting directory when
@@ -569,7 +569,11 @@ not have it yet.
 - A terminal of the host pastes files of the Finder, of the explorer of a local folder, or dropped on it, as copies
   uploaded to a temporary folder of the host, and types their paths there. An image alone on the clipboard, as a
   screenshot, goes up as a PNG file of its own, so that Claude Code running on the host takes it as it does a
-  screenshot pasted on the Mac. A file of the host dragged to its terminal types its path on the host.
+  screenshot pasted on the Mac. A file of the host dragged to its terminal types its path on the host, and a path
+  of the host Command-clicked in its terminal opens that file, once a look on the host finds it, `~/` being the
+  home folder of the host. A relative path is taken in the folder the shell reports, or else the folder the program
+  in front of the terminal is in on the host, so it follows a `cd` with no setup there; under tmux it is the folder
+  tmux started in.
 - Ports of the host forward to this machine, so that a server running there, as a web app in development, opens in
   a browser here. Clicking a link to `localhost`, `127.0.0.1` or `0.0.0.0` in a terminal of the host forwards its port
   and opens it; **Forward a Port…**, in **File → Remote SSH**, the command palette and the status bar's `SSH` menu,

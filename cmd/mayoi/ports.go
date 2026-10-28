@@ -83,14 +83,19 @@ func (a *app) localLink(link string) (string, bool) {
 	return u.String(), true
 }
 
-// terminalLink opens local file paths in the editor. A link to a port
-// in a terminal of a host goes to the port forwarded to it here.
+// terminalLink opens file paths in the editor, those of a terminal of a
+// host on the host. A link to a port in a terminal of a host goes to the
+// port forwarded to it here.
 func (a *app) terminalLink(s *session, link string) bool {
-	if !remote.Is(s.dir) && a.terminalFile(s, link) {
-		return true
+	c := sessionConn(s)
+	if c == nil {
+		return a.terminalFile(s, link)
 	}
-	if sessionConn(s) == nil || sessionConn(s) != a.conn {
+	if c != a.conn {
 		return false
+	}
+	if a.remoteTerminalFile(s, c, link) {
+		return true
 	}
 	to, ok := a.localLink(link)
 	if !ok {

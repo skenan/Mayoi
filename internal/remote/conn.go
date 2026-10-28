@@ -529,9 +529,14 @@ func (c *Conn) TerminalCommand(dir string) []string {
 		"-o", "ServerAliveInterval=10", "-o", "ServerAliveCountMax=3", "-t"}
 	args = append(args, hostArgs(c.Host)...)
 	// The login shell runs this: its quoting is that of most shells, and
-	// sh does the rest.
-	return append(args, "exec sh -c "+quote(`cd "$1" 2>/dev/null || cd; exec "${SHELL:-sh}" -l`)+" sh "+quote(dir))
+	// sh does the rest. The title says the pid of the shell, which exec
+	// keeps, for StatInShell.
+	return append(args, "exec sh -c "+quote(`cd "$1" 2>/dev/null || cd; printf "\033]2;`+ShellTitle+`%s\007" $$; exec "${SHELL:-sh}" -l`)+" sh "+quote(dir))
 }
+
+// ShellTitle starts the title a terminal of TerminalCommand sets first,
+// followed by the pid of its shell.
+const ShellTitle = "mayoi-shell:"
 
 // sshError is what to say of an ssh that failed, by what it said.
 func sshError(stderr string, fallback error) error {

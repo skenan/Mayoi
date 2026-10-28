@@ -273,13 +273,19 @@ func (a *app) goToLine(line, col int) {
 		return
 	}
 	a.markJump()
+	placeCaret(d, line, col)
+	d.vscroll.Focus()
+}
+
+// placeCaret puts an editor's caret at a line and column, 1-based, within
+// its text.
+func placeCaret(d *editor, line, col int) {
 	snap := d.buf.Snapshot()
 	l := max(0, min(line-1, snap.LineCount()-1))
 	s, e := snap.LineRange(l)
 	at := min(s+max(col-1, 0), e)
 	d.selectRange(at, at, true)
 	d.lightLanding()
-	d.vscroll.Focus()
 }
 
 // recentFirst puts the files shown last before the others, as quick open

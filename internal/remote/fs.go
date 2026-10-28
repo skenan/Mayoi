@@ -132,6 +132,36 @@ func (c *Conn) StatMany(paths []string) (map[string]*FileInfo, error) {
 	return parseStat(out), nil
 }
 
+// StatInShell stats files on the host as StatMany does, relative ones in
+// the folder of the program in front in the terminal whose shell is pid,
+// else of the shell, else in dir: a pid of 0 is none. It returns the
+// folder they were taken in, under dir as dir spells it, links and all,
+// though a process's folder has none.
+func (c *Conn) StatInShell(pid int, dir string, paths []string) (string, map[string]*FileInfo, error) {
+	p := ""
+	if pid > 0 {
+		p = strconv.Itoa(pid)
+	}
+	out, err := c.Run(nil, `pid=$1 dir=$2; shift 2
+cd -- "$dir" 2>/dev/null
+if [ -n "$pid" ]; then
+  for p in $(ps -o tpgid= -p "$pid" 2>/dev/null) "$pid"; do
+    d=$(readlink "/proc/$p/cwd" 2>/dev/null || lsof -a -p "$p" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
+    [ -n "$d" ] || continue
+    r=$(pwd -P)
+    case $d in "$r"|"$r"/*) d=$dir${d#"$r"};; esac
+    cd -- "$d" 2>/dev/null && break
+  done
+fi
+printf '%s\n' "$PWD"
+`+c.Info().statCmd(true)+` -- "$@" 2>/dev/null; exit 0`, append([]string{p, dir}, paths...)...)
+	if err != nil {
+		return "", nil, err
+	}
+	in, rest, _ := strings.Cut(string(out), "\n")
+	return in, parseStat([]byte(rest)), nil
+}
+
 // Stat stats a file on the host, following a link.
 func (c *Conn) Stat(p string) (*FileInfo, error) { return c.stat(p, true) }
 

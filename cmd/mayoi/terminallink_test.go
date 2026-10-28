@@ -4,8 +4,10 @@ import (
 	"net"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/egoist/mygo/plugins/terminal"
 	"github.com/egoist/mygo/ui"
@@ -166,5 +168,72 @@ func TestTerminalLinkLeavesOtherLinks(t *testing.T) {
 	}
 	if len(hs.a.docs) != 0 {
 		t.Fatal("opened a document for a rejected link")
+	}
+}
+
+func TestRemoteTerminalLinkOpensFile(t *testing.T) {
+	hs, c, dir := remoteHarness(t)
+	a := hs.a
+	if _, err := c.Run(nil, `printf 'one\ntwo\nthree\n' > "$1/src/b.txt"`, dir); err != nil {
+		t.Fatal(err)
+	}
+	s := &session{dir: hs.root}
+	want := hs.path("src/b.txt")
+	for _, tc := range []struct {
+		name, link string
+		line, col  int
+	}{
+		{"relative", "src/b.txt", 1, 1},
+		{"absolute with line and column", dir + "/src/b.txt:3:2", 3, 2},
+		{"dot relative with line", "./src/b.txt:2", 2, 1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			a.closeAll(nil)
+			if !a.terminalLink(s, tc.link) {
+				t.Fatalf("did not handle %q", tc.link)
+			}
+			hs.untilLong("the file", func() bool {
+				d := a.activeEditor()
+				return d != nil && d.path == want && !d.loading
+			})
+			d := a.activeEditor()
+			snap := d.buf.Snapshot()
+			line := snap.LineAt(d.sel[1])
+			start, _ := snap.LineRange(line)
+			if line+1 != tc.line || d.sel[1]-start+1 != tc.col {
+				t.Errorf("caret at %d:%d, want %d:%d", line+1, d.sel[1]-start+1, tc.line, tc.col)
+			}
+		})
+	}
+	if os.Getenv("MAYOI_SSH_TEST_HOST") == "" {
+		// The fake host is this machine: a process here stands for a shell
+		// that went into src.
+		shell := exec.Command("sleep", "30")
+		shell.Dir = dir + "/src"
+		if err := shell.Start(); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { shell.Process.Kill(); shell.Wait() })
+		a.closeAll(nil)
+		in := &session{dir: hs.root, pid: shell.Process.Pid}
+		if !a.terminalLink(in, "b.txt:2") {
+			t.Fatal("did not handle a path of the shell's folder")
+		}
+		// The process's folder is without links, as /var's on macOS, but the
+		// file opens as the folder spells it.
+		hs.untilLong("the file in the shell's folder", func() bool {
+			d := a.activeEditor()
+			return d != nil && d.path == want && !d.loading && d.buf.Snapshot().LineAt(d.sel[1]) == 1
+		})
+	}
+	a.closeAll(nil)
+	if !a.terminalLink(s, "src/missing.txt") {
+		t.Fatal("did not take a path of the host")
+	}
+	// The stat's round trip.
+	until := time.Now().Add(time.Second)
+	hs.untilLong("a second", func() bool { return time.Now().After(until) })
+	if d := a.activeEditor(); d != nil {
+		t.Errorf("opened %s for a missing file", d.path)
 	}
 }

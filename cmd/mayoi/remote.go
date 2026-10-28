@@ -291,6 +291,10 @@ func (a *app) remoteLoaded(d *document, path string, info fs.FileInfo, data []by
 			ed.restoreTab = nil
 			a.restoreEditor(ed, *ts)
 		}
+		if at := ed.goTo; at[0] > 0 {
+			ed.goTo = [2]int{}
+			placeCaret(ed, at[0], at[1])
+		}
 	}
 	a.find.stale = true
 }
