@@ -170,6 +170,26 @@ func TestKeymapExplorerKeys(t *testing.T) {
 	}
 }
 
+// ⌘⌫ in the explorer trashes the file chosen, as Mayoi's own key.
+func TestKeymapExplorerTrashKey(t *testing.T) {
+	hs := newHarness(t, false)
+	a, tt := hs.a, hs.tt
+	a.keys = withDefaultKeys(nil)
+	if err := tt.Click("go.mod"); err != nil {
+		t.Fatal(err)
+	}
+	hs.settle()
+	tt.Key(ui.Super, ui.KeyBackspace)
+	hs.settle()
+	if len(hs.h.trashed) > 0 || a.confirm == nil {
+		t.Fatalf("cmd+backspace trashed %q before asking", hs.h.trashed)
+	}
+	a.confirm.run()
+	if !slices.Contains(hs.h.trashed, hs.path("go.mod")) {
+		t.Errorf("cmd+backspace in the explorer: trashed %q", hs.h.trashed)
+	}
+}
+
 func TestKeymapRunCommands(t *testing.T) {
 	hs := newHarness(t, false)
 	a, tt := hs.a, hs.tt

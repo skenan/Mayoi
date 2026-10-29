@@ -186,6 +186,7 @@ const defaultKeys = `[
 	{ "key": "cmd+k", "command": "editor.action.startFindReplaceAction", "when": "!terminalFocus" },
 	{ "key": "cmd+d", "command": "editor.action.deleteLines", "when": "editorTextFocus && !editorReadonly" },
 	{ "key": "ctrl+h", "command": "workbench.action.findInFiles", "when": "!terminalFocus" },
+	{ "key": "cmd+backspace", "command": "deleteFile", "when": "filesExplorerFocus && !inputFocus" },
 	{ "key": "shift+enter", "command": "workbench.action.terminal.sendSequence", "args": { "text": "\u001b\r" }, "when": "terminalFocus" },
 ]`
 
