@@ -17,6 +17,7 @@ Every release needs a `## <version>` section here, or its build fails.
 - `⌘J` toggles the terminal panel, and `⌘E` opens Quick Open.
 - In the editor, `⌘K` opens replace and `⌘D` deletes the line; in a terminal, `⌘K` clears it.
 - `⌃H` searches the files, outside a terminal.
+- Moving a file to the Trash from the Explorer asks first.
 - `Shift+Enter` in a terminal starts a new line in Claude Code.
 - Command-click a file path in a terminal of an SSH host to open the host's file, at its `:line:column`.
 - Pale text in a terminal, as Claude Code's diffs, darkens to stay readable on a light theme.

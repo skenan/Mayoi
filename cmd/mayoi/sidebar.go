@@ -818,12 +818,15 @@ func (a *app) trash(path string) {
 			}}
 		return
 	}
-	if err := a.host.trash(path); err != nil {
-		a.fail("%s", locales.FailMoveTo(filepath.Base(path), trashName(), err.Error()))
-		return
-	}
-	a.tree.Refresh()
-	a.indexStale = true
+	a.confirm = &confirm{title: locales.MoveToTrashQuestion(filepath.Base(path), trashName()),
+		ok: trashLabel(), danger: true, run: func() {
+			if err := a.host.trash(path); err != nil {
+				a.fail("%s", locales.FailMoveTo(filepath.Base(path), trashName(), err.Error()))
+				return
+			}
+			a.tree.Refresh()
+			a.indexStale = true
+		}}
 }
 
 func (a *app) relOrPath(path string) string {

@@ -161,6 +161,10 @@ func TestKeymapExplorerKeys(t *testing.T) {
 	hs.settle()
 	tt.TypeKey(0, ui.KeyD, "d")
 	hs.settle()
+	if a.confirm == nil {
+		t.Fatal("d in the explorer asked nothing")
+	}
+	a.confirm.run()
 	if !slices.Contains(hs.h.trashed, hs.path("go.mod")) {
 		t.Errorf("d in the explorer: trashed %q", hs.h.trashed)
 	}
