@@ -695,13 +695,16 @@ func WriteFile(path string, data []byte) error {
 	return err
 }
 
-// AddRecent puts dir first of the recent folders, of which it keeps ten,
-// and lets go of the sessions of those no longer recent.
+// RecentMax is how many recent folders are kept.
+const RecentMax = 100
+
+// AddRecent puts dir first of the recent folders, of which it keeps
+// RecentMax, and lets go of the sessions of those no longer recent.
 func (s *Settings) AddRecent(dir string) {
 	s.Recent = slices.DeleteFunc(s.Recent, func(d string) bool { return d == dir })
 	s.Recent = slices.Insert(s.Recent, 0, dir)
-	if len(s.Recent) > 10 {
-		s.Recent = s.Recent[:10]
+	if len(s.Recent) > RecentMax {
+		s.Recent = s.Recent[:RecentMax]
 	}
 	for d := range s.Sessions {
 		if !slices.Contains(s.Recent, d) {

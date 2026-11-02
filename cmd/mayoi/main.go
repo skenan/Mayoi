@@ -674,12 +674,13 @@ func (m *mayoi) menuUpdate(menu *mygo.Menu) func() {
 }
 
 // dockMenu is the menu of the Dock icon: a window that shows nothing, and
-// the recent folders, each in the window in front, which comes forward.
+// the last ten recent folders, each in the window in front, which comes forward.
 func (m *mayoi) dockMenu() *mygo.Menu {
 	items := []*mygo.MenuItem{{Label: locales.CmdFileNewWindow(), Click: func(_ *mygo.MenuItem, _ *mygo.Window) {
 		m.openBlankWindow()
 	}}}
 	recent := m.s.RecentExcept("")
+	recent = recent[:min(10, len(recent))]
 	if len(recent) > 0 {
 		items = append(items, mygo.Separator())
 	}

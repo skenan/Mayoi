@@ -389,9 +389,10 @@ func (a *app) menu(cli bool, run func(id string, win *mygo.Window)) *mygo.Menu {
 		return it
 	}
 	theme := func(id, th string) *mygo.MenuItem { return radio(id, a.settings.Theme == th) }
-	// The recent folders but the window's, and the box of them all.
+	// The last ten recent folders but the window's, and the box of them all.
 	var recent []*mygo.MenuItem
-	for _, dir := range a.settings.RecentExcept(a.root) {
+	dirs := a.settings.RecentExcept(a.root)
+	for _, dir := range dirs[:min(10, len(dirs))] {
 		id := recentCommand + dir
 		recent = append(recent, &mygo.MenuItem{Label: shortenHome(dir), Click: func(_ *mygo.MenuItem, win *mygo.Window) {
 			run(id, win)

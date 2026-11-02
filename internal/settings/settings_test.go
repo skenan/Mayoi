@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -199,8 +200,8 @@ func TestSessions(t *testing.T) {
 	}
 	// Folders no longer recent, and clearing them, let theirs go.
 	s.Stash(w)
-	for i := range 10 {
-		s.AddRecent(filepath.Join(filepath.FromSlash("/tmp/z"), string(rune('a'+i))))
+	for i := range RecentMax {
+		s.AddRecent(filepath.Join(filepath.FromSlash("/tmp/z"), strconv.Itoa(i)))
 	}
 	if len(s.Sessions) != 0 {
 		t.Errorf("kept %v", s.Sessions)
